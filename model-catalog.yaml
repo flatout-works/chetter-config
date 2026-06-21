@@ -5,7 +5,7 @@ default_model: hf:zai-org/GLM-5.2
 defaults:
   opencode:
     provider: synthetic
-    model: hf:zai-org/GLM-5.2
+    model: hf:zai-org/GLM-5.1
   pi:
     provider: zai
     model: glm-5.2
@@ -18,7 +18,7 @@ providers:
     name: Synthetic
     kind: openai_compatible
     models:
-      - id: hf:zai-org/GLM-5.2
+      - id: hf:zai-org/GLM-5.1
 
   opencode:
     name: OpenCode Zen
