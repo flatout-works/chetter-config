@@ -14,7 +14,7 @@ git_ref: main
 agent_image: chetter-runner:latest
 harness: opencode
 agent: task-improver
-provider_id: opencode
+provider_id: deepseek
 model_id: deepseek-v4-pro
 timeout_sec: 7200
 skills:
