@@ -7,8 +7,8 @@ defaults:
     provider: synthetic
     model: hf:moonshotai/Kimi-K2.6
   pi:
-    provider: zai
-    model: glm-5.2
+    provider: deepseek
+    model: deepseek-v4-pro
   claude-code:
     provider: anthropic
     model: claude-sonnet-4-5
@@ -35,15 +35,8 @@ providers:
     api_key_env: DEEPSEEK_API_KEY
     base_url: https://api.deepseek.com
     models:
-      - id: deepseek-chat
       - id: deepseek-v4-pro
       - id: deepseek-v4-flash
-
-  zai:
-    name: Z.ai
-    kind: native
-    models:
-      - id: glm-5.2
 
   anthropic:
     name: Anthropic
