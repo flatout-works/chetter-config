@@ -19,8 +19,8 @@ git_ref: main
 agent_image: chetter-runner:latest
 harness: opencode
 agent: docs-maintainer
-provider_id: opencode
-model_id: deepseek-v4-flash-free
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 3600
 prompt: |-
   Review recent repository changes and update documentation so it matches the
