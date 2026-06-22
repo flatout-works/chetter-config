@@ -1,11 +1,11 @@
 version: 1
 default_provider: synthetic
-default_model: hf:moonshotai/Kimi-K2.6
+default_model: moonshotai/Kimi-K2.6
 
 defaults:
   opencode:
     provider: synthetic
-    model: hf:moonshotai/Kimi-K2.6
+    model: moonshotai/Kimi-K2.6
   pi:
     provider: zai
     model: glm-5.2
@@ -18,8 +18,8 @@ providers:
     name: Synthetic
     kind: openai_compatible
     models:
-      - id: hf:moonshotai/Kimi-K2.6
-      - id: hf:zai-org/GLM-5.1
+      - id: moonshotai/Kimi-K2.6
+      - id: hf:zai-org/GLM-5.2
 
   opencode:
     name: OpenCode Zen
