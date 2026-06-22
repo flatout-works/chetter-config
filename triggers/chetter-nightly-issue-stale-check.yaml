@@ -22,8 +22,8 @@ git_ref: main
 agent_image: chetter-runner:latest
 harness: opencode
 agent: issue-stale-check
-provider_id: opencode
-model_id: deepseek-v4-flash-free
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 3600
 skills:
   - chetter
