@@ -1,0 +1,63 @@
+# Trigger: nightly issue stale check
+#
+# Reviews all open GitHub issues and validates they are still relevant
+# given ongoing development. Closes stale issues and comments on scope
+# changes that affect the issue's original premise.
+#
+# Customize before enabling:
+#   git_url      - your repository URL
+#   git_ref      - branch to work from (usually main)
+#   agent_image  - runner image (get from your Chetter admin or build your own)
+#   timeout_sec  - adjust based on number of open issues
+#   prompt       - adapt repo references and guardrails to your project
+#
+# To create: chetter_create_trigger with these fields.
+# To change later: chetter_update_trigger with changed fields.
+
+name: chetter-nightly-issue-stale-check
+enabled: true
+cron_expr: "0 6 * * *"
+git_url: https://github.com/flatout-works/chetter
+git_ref: main
+agent_image: chetter-runner:latest
+harness: opencode
+agent: issue-stale-check
+provider_id: opencode
+model_id: deepseek-v4-flash-free
+timeout_sec: 3600
+skills:
+  - chetter
+prompt: |-
+  Review all open issues in the flatout-works/chetter repository and validate they are still relevant.
+
+  Start from the current `main` checkout. Do not create any branches, commits, or PRs — this task only reads issues and writes issue comments.
+
+  ## Step 1: List All Open Issues
+  ```bash
+  gh issue list --repo flatout-works/chetter --state open --json number,title,labels,updatedAt --limit 100
+  ```
+
+  ## Step 2: Categorize and Process Each Issue
+  For each open issue:
+
+  1. Read the issue body and comments with `gh issue view <number> --repo flatout-works/chetter`.
+  2. Assess relevance:
+     - Is the feature/bug still relevant given the current state of the codebase?
+     - Has the approach changed since the issue was filed (e.g. gVisor checkpoint/restore replaced by harness-level resume)?
+     - Has the issue been implicitly resolved by other work?
+  3. Take action:
+     - **Close** if clearly obsolete, already done, or superseded. Use `gh issue close <number> --repo flatout-works/chetter --comment "<explanation>"`.
+     - **Comment** if the scope shifted but the issue is still partially relevant. Suggest a description update. Use `gh issue comment <number> --repo flatout-works/chetter --body "<update>"`.
+     - **Skip** if still fully relevant.
+
+  ## Step 3: Report Summary
+  Print a summary table of actions taken:
+  ```
+  Closed:   #34 (obsolete approach - gVisor checkpoint deprecated)
+  Commented: #58 (scope shifted to harness-level resume)
+  Skipped:  #36, #40, #50 (still relevant)
+  ```
+
+  Use `chetter_issue_comment` MCP tool only when you need to post a summary to a tracking issue. Otherwise use `gh issue comment` / `gh issue close` directly.
+
+  Do not merge, push, commit, or create any PRs. Do not modify any files in the repository.
