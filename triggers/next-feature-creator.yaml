@@ -6,8 +6,8 @@ git_ref: main
 agent_image: chetter-runner:latest
 harness: opencode
 agent: feature-creator
-provider_id: opencode
-model_id: deepseek-v4-flash-free
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 3600
 prompt: |-
   Analyze this repository's documentation, CHANGELOG.md, open GitHub issues, codebase gaps, and recent development trajectory to propose and create a GitHub issue for the next most impactful feature, fix, or refactoring the project should focus on.
