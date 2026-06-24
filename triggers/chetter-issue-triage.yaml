@@ -65,13 +65,12 @@ prompt: |-
 
   ### 4. Post triage comment
 
-  Post a structured comment on the issue with `chetter_issue_comment`. Use
-  `task_id=$CHETTER_TASK_ID`, `repo=$GITHUB_REPO`, and
-  `issue_number=$ISSUE_NUMBER`. Do not use `gh issue comment` and do not
-  manually add the Chetter footer; the tool adds the canonical footer and
-  records audit/artifact metadata.
+   Post a structured comment on the issue by calling the `chetter_issue_comment`
+   MCP tool with `repo=$GITHUB_REPO` and `issue_number=$ISSUE_NUMBER`. Do not
+   use `gh issue comment` and do not manually add the Chetter footer; the tool
+   adds the canonical footer and records audit/artifact metadata.
 
-  The comment must include:
+   The comment must include:
   - **Assessment**: brief summary of what the issue is about
   - **Category**: the classification from step 2
   - **Priority**: the priority level and reasoning

@@ -23,9 +23,9 @@ The environment provides: GITHUB_REPO, GITHUB_TOKEN, CHETTER_TASK_ID
    - **Comment** if the scope changed enough that the description should be updated. Include a note about what changed and suggest updated wording.
    - **Skip** if the issue is still fully relevant and the description is accurate.
 
-4. When closing an issue, use `gh issue close <number> --repo flatout-works/chetter --comment "..."` with a clear explanation of why it is being closed (e.g. "This approach was superseded by harness-level resume — gVisor checkpoint/restore is no longer used.").
+4. When closing an issue, first call `chetter_issue_comment` with `repo=$GITHUB_REPO`, `issue_number=<number>`, and `body="<explanation>"`, then use `gh issue close <number> --repo flatout-works/chetter --comment "..."`. Do not use `gh issue comment`.
 
-5. When commenting on scope change, use `gh issue comment <number> --repo flatout-works/chetter --body "..."` with specific references to commits, PRs, or decisions that affected the issue's scope.
+5. When commenting on scope change, call `chetter_issue_comment` with `repo=$GITHUB_REPO`, `issue_number=<number>`, and `body="<update>"` with specific references to commits, PRs, or decisions that affected the issue's scope. Do not use `gh issue comment`.
 
 6. After processing all issues, report a summary of actions taken (closed, commented, skipped counts and which issues).
 

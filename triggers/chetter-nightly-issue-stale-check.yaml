@@ -37,27 +37,25 @@ prompt: |-
   gh issue list --repo flatout-works/chetter --state open --json number,title,labels,updatedAt --limit 100
   ```
 
-  ## Step 2: Categorize and Process Each Issue
-  For each open issue:
+   ## Step 2: Categorize and Process Each Issue
+   For each open issue:
 
-  1. Read the issue body and comments with `gh issue view <number> --repo flatout-works/chetter`.
-  2. Assess relevance:
-     - Is the feature/bug still relevant given the current state of the codebase?
-     - Has the approach changed since the issue was filed (e.g. gVisor checkpoint/restore replaced by harness-level resume)?
-     - Has the issue been implicitly resolved by other work?
-  3. Take action:
-     - **Close** if clearly obsolete, already done, or superseded. Use `gh issue close <number> --repo flatout-works/chetter --comment "<explanation>"`.
-     - **Comment** if the scope shifted but the issue is still partially relevant. Suggest a description update. Use `gh issue comment <number> --repo flatout-works/chetter --body "<update>"`.
-     - **Skip** if still fully relevant.
+   1. Read the issue body and comments with `gh issue view <number> --repo flatout-works/chetter`.
+   2. Assess relevance:
+      - Is the feature/bug still relevant given the current state of the codebase?
+      - Has the approach changed since the issue was filed (e.g. gVisor checkpoint/restore replaced by harness-level resume)?
+      - Has the issue been implicitly resolved by other work?
+   3. Take action:
+      - **Close** if clearly obsolete, already done, or superseded. Call `chetter_issue_comment` to post the explanation, then use `gh issue close <number> --repo flatout-works/chetter`.
+       - **Comment** if the scope shifted but the issue is still partially relevant. Suggest a description update. Call `chetter_issue_comment` with `repo=$GITHUB_REPO`, `issue_number=<number>`, and `body="<update>"`. Do not use `gh issue comment`.
+      - **Skip** if still fully relevant.
 
-  ## Step 3: Report Summary
-  Print a summary table of actions taken:
-  ```
-  Closed:   #34 (obsolete approach - gVisor checkpoint deprecated)
-  Commented: #58 (scope shifted to harness-level resume)
-  Skipped:  #36, #40, #50 (still relevant)
-  ```
-
-  Use `chetter_issue_comment` MCP tool only when you need to post a summary to a tracking issue. Otherwise use `gh issue comment` / `gh issue close` directly.
+   ## Step 3: Report Summary
+   Print a summary table of actions taken:
+   ```
+   Closed:   #34 (obsolete approach - gVisor checkpoint deprecated)
+   Commented: #58 (scope shifted to harness-level resume)
+   Skipped:  #36, #40, #50 (still relevant)
+   ```
 
   Do not merge, push, commit, or create any PRs. Do not modify any files in the repository.

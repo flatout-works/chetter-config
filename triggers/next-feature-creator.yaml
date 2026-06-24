@@ -21,10 +21,10 @@ prompt: |-
   3. Check open GitHub issues via `gh issue list` to avoid duplicates
   4. Scan the codebase for TODOs, FIXMEs, missing tests, stale code, and gaps
   5. Evaluate which item would have the highest impact relative to effort
-  6. Create a well-structured GitHub issue with summary, acceptance criteria, and rationale using `chetter_create_issue`
+   6. Create a well-structured GitHub issue with summary, acceptance criteria, and rationale using the `chetter_create_issue` MCP tool.
 
-  Prioritize: operational resilience > missing features > refactoring > documentation updates. Avoid creating issues that duplicate existing open ones. Focus on actionable, well-scoped work rather than vague epics.
+   Prioritize: operational resilience > missing features > refactoring > documentation updates. Avoid creating issues that duplicate existing open ones. Focus on actionable, well-scoped work rather than vague epics.
 
-  Use `chetter_create_issue` with `task_id=$CHETTER_TASK_ID` and `repo="flatout-works/chetter"`. Do not use `gh issue create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+   Call `chetter_create_issue` with `repo="flatout-works/chetter"`, `title="...`, `body="...`, and optional `labels`. Do not use `gh issue create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
   If no new issue is warranted (all gaps are already captured), report that and exit without creating a duplicate.

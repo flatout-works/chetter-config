@@ -37,12 +37,12 @@ prompt: |-
   do not invent capabilities or add marketing copy. Skip purely mechanical
   churn unless it affects users, operators, contributors, or release notes.
 
-  If `CHANGELOG.md` is created or modified, create a branch named
-  `docs/update-changelog-YYYY-MM-DD`, commit with message
-  `docs: update changelog from recent history`, push, and open a pull request
-  against `main` using `chetter_create_pr`.
+   If `CHANGELOG.md` is created or modified, create a branch named
+   `docs/update-changelog-YYYY-MM-DD`, commit with message
+   `docs: update changelog from recent history`, push, and open a pull request
+   against `main` using the `chetter_create_pr` MCP tool.
 
-  Use `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="flatout-works/chetter"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+   Call `chetter_create_pr` with `repo="flatout-works/chetter"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
-  If there are no changelog-worthy changes, leave files unchanged and report
-  that no update was needed. Do not push directly to `main`.
+   If there are no changelog-worthy changes, leave files unchanged and report
+   that no update was needed. Do not push directly to `main`.

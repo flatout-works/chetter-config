@@ -25,6 +25,26 @@ Use a sensible default runner image such as `ghcr.io/flatout-works/chetter-runne
 
 ## Available MCP Tools
 
+All tools are prefixed `chetter_` and available via the `chetter` MCP server. Agents running inside Chetter runner tasks also have access to **local runner-bridge MCP tools** — these are the same GitHub write tools (`chetter_create_issue`, `chetter_issue_comment`, `chetter_create_pr`, `chetter_pr_review`) auto-wired with the current task ID so the agent does not need to pass it.
+
+### Runner-Bridge Tools (available to agents in runner tasks)
+
+Call these directly by name — the runner auto-injects the task context:
+
+| Tool | Purpose | Key Parameters |
+|---|---|---|
+| `chetter_create_issue` | Create a GitHub issue with Chetter signature | `repo`, `title`, `body`, `labels` |
+| `chetter_issue_comment` | Create an issue/PR comment with Chetter signature | `repo`, `issue_number`, `body` |
+| `chetter_create_pr` | Create a pull request with Chetter signature | `repo`, `title`, `body`, `head`, `base`, `draft` |
+| `chetter_pr_review` | Create a PR review with Chetter signature | `repo`, `pr_number`, `event`, `body` |
+| `workspace_read_file` | Read a file in the workspace | `path` |
+| `workspace_write_file` | Write a file in the workspace | `path`, `content` |
+| `workspace_list_directory` | List workspace directory | `path` |
+
+Never use `gh issue create`, `gh issue comment`, `gh pr create`, or `gh pr review` for write operations — the `gh` wrapper blocks them. Always prefer the runner-bridge MCP tools above, which add the canonical Chetter signature and record audit/artifact metadata.
+
+### Chetter Management Tools (remote MCP server)
+
 All tools are prefixed `chetter_` and available via the `chetter` MCP server.
 
 ### Fleet Health

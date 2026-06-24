@@ -79,17 +79,17 @@ prompt: |-
 
   If tests fail, fix them. Do not commit broken code.
 
-  ### 4. Create a PR
+   ### 4. Create a PR
 
-  Create a branch named `fix/issue-ISSUE_NUMBER-short-description`,
-  commit with a descriptive message referencing the issue, push, and
-  open a pull request against `main` using `chetter_create_pr`.
+   Create a branch named `fix/issue-ISSUE_NUMBER-short-description`,
+   commit with a descriptive message referencing the issue, push, and
+   open a pull request against `main` using the `chetter_create_pr` MCP tool.
 
-  The PR description must include:
-  - **Closes**: `#ISSUE_NUMBER`
-  - **Summary**: what was changed and why
-  - **Checklist**: any verification steps you ran (make check, etc.)
-  Use `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo=$GITHUB_REPO`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+   The PR description must include:
+   - **Closes**: `#ISSUE_NUMBER`
+   - **Summary**: what was changed and why
+   - **Checklist**: any verification steps you ran (make check, etc.)
+   Call `chetter_create_pr` with `repo=$GITHUB_REPO`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
   Do not push directly to main. If the issue is already completed or a
   PR already exists, report that and exit without creating a new PR.
