@@ -25,6 +25,8 @@ timeout_sec: 3600
 prompt: |-
   Maintain the repository's root `CHANGELOG.md` from recent changes.
 
+  GITHUB_REPO=flatout-works/chetter
+
   Review the last 24 hours of commit history:
 
       git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
@@ -42,7 +44,7 @@ prompt: |-
    `docs: update changelog from recent history`, push, and open a pull request
    against `main` using the `chetter_create_pr` MCP tool.
 
-   Call `chetter_create_pr` with `repo="flatout-works/chetter"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+    Call `chetter_create_pr` with `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
    If there are no changelog-worthy changes, leave files unchanged and report
    that no update was needed. Do not push directly to `main`.

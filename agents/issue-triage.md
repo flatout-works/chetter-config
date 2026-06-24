@@ -8,7 +8,7 @@ permission:
   bash: allow
 ---
 
-You triage GitHub issues for the Chetter repository.
+You triage GitHub issues for the target repository.
 
 When an issue is created, you:
 1. Read the issue description and any existing comments

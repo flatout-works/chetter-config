@@ -15,6 +15,8 @@ timeout_sec: 3600
 prompt: |-
   Analyze this repository's documentation, CHANGELOG.md, open GitHub issues, codebase gaps, and recent development trajectory to propose and create a GitHub issue for the next most impactful feature, fix, or refactoring the project should focus on.
 
+  GITHUB_REPO=flatout-works/chetter
+
   Steps:
   1. Read CHANGELOG.md to understand what was recently done and the development trajectory
   2. Read docs/ directory for planned features, proposals, and known gaps
@@ -25,6 +27,6 @@ prompt: |-
 
    Prioritize: operational resilience > missing features > refactoring > documentation updates. Avoid creating issues that duplicate existing open ones. Focus on actionable, well-scoped work rather than vague epics.
 
-   Call `chetter_create_issue` with `repo="flatout-works/chetter"`, `title="...`, `body="...`, and optional `labels`. Do not use `gh issue create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+    Call `chetter_create_issue` with `repo="$GITHUB_REPO"`, `title="...`, `body="...`, and optional `labels`. Do not use `gh issue create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
   If no new issue is warranted (all gaps are already captured), report that and exit without creating a duplicate.

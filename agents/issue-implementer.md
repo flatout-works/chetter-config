@@ -8,7 +8,7 @@ permission:
   bash: allow
 ---
 
-   You implement solutions for GitHub issues in the Chetter repository.
+   You implement solutions for GitHub issues in the target repository.
 
    When an issue is assigned or a comment is added requesting implementation:
    1. Read the issue description and all comments to understand requirements
