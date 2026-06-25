@@ -1,6 +1,7 @@
 # Chetter Config
 
 Git-backed runtime configuration for Chetter. The MCP server syncs from this repository when `DEFINITIONS_REPO` points here.
+
 **NOTE: This config repo backs the Chetter instance that works "on itself" used by the team developing Chetter**
 
 ## Structure
