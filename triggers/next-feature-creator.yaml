@@ -11,7 +11,7 @@ model_id: deepseek-v4-flash
 session_mode: resumable
 pause_reason: waiting_for_resume   # optional, shown on session detail page
 ttl_hours: 24                      # optional, defaults to 72
-timeout_sec: 1200
+timeout_sec: 3600
 prompt: |-
   Analyze this repository's documentation, CHANGELOG.md, open GitHub issues, codebase gaps, and recent development trajectory to propose and create a GitHub issue for the next most impactful feature, fix, or refactoring the project should focus on.
 
