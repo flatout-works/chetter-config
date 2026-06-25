@@ -1,8 +1,8 @@
 # Trigger: issue implementation
 #
-# When a comment is posted on an issue (e.g., triage feedback requesting
-# implementation), an agent reads the issue, plans the work, implements
-# the solution, and opens a PR.
+# When the approved label is added to an issue (by the triage agent), an
+# agent reads the issue, plans the work, implements the solution, and
+# opens a PR.
 #
 # Customize before enabling:
 #   git_url      - repository URL to clone before working
@@ -19,7 +19,7 @@
 name: chetter-issue-implementer
 enabled: true
 trigger_type: issue
-trigger_config: '{"repo": "flatout-works/chetter", "event": "comment"}'
+trigger_config: '{"repo": "flatout-works/chetter", "event": "labeled", "match_labels": ["approved"]}'
 agent_image: chetter-runner:latest
 harness: opencode
 agent: issue-implementer
@@ -31,8 +31,9 @@ timeout_sec: 7200
 skills:
   - issue-implementer
 prompt: |-
-  You are implementing a solution for a GitHub issue. You have access to
-  the repository and the `gh` CLI for read-only inspection.
+  You are implementing a solution for a GitHub issue that has been
+  approved for implementation after triage. You have access to the
+  repository and the `gh` CLI for read-only inspection.
 
   ## Context
 
@@ -48,25 +49,20 @@ prompt: |-
 
   ### 1. Understand the issue
 
-  Read the issue description and all comments:
+  Read the issue description, triage assessment, and all comments:
 
   ```bash
   gh issue view $ISSUE_NUMBER --comments --json title,body,comments,labels
   ```
 
-  Pay special attention to any triage feedback, acceptance criteria, or
-  implementation guidance left by reviewers.
+  Pay special attention to the triage comment — it contains the
+  assessment, category, priority, and an implementation plan.
 
   ### 2. Plan the implementation
 
-  Before writing code, inspect the relevant parts of the codebase:
-
-  ```bash
-  gh issue view $ISSUE_NUMBER --json labels
-  ```
-
-  Identify which files, components, or modules need changes. Outline your
-  approach before implementing.
+  Review the triage plan and inspect the relevant parts of the codebase.
+  Identify which files, components, or modules need changes. Adjust the
+  plan if you find issues the triage missed.
 
   ### 3. Implement
 

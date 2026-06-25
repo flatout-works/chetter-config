@@ -76,6 +76,20 @@ prompt: |-
   - **Priority**: the priority level and reasoning
   - **Plan**: concrete next steps, or clarifying questions if more info is needed
   - **Labels**: if applicable, suggest labels that should be added
-  Do not close the issue or assign it unless the instructions above tell you
-  to. If the issue is a duplicate, note the duplicate reference and suggest
-  closing.
+   Do not close the issue or assign it unless the instructions above tell you
+   to. If the issue is a duplicate, note the duplicate reference and suggest
+   closing.
+
+   ### 5. Approve for implementation
+
+   If the issue is clear and actionable (not a question, not a duplicate,
+   and contains enough detail to implement), add the `approved` label so
+   the implementer trigger picks it up:
+
+   ```bash
+   gh issue edit $ISSUE_NUMBER --add-label "approved"
+   ```
+
+   Only add the label if you are confident the issue is ready to be worked
+   on. If information is missing, ask clarifying questions in the comment
+   instead.
