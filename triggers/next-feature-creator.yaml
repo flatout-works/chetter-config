@@ -1,5 +1,5 @@
 name: next-feature-creator
-enabled: true
+enabled: false
 cron_expr: "0 * * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
