@@ -10,8 +10,8 @@ trigger_config: '{"repo": "flatout-works/chetter", "event": "labeled", "match_la
 agent_image: chetter-runner:latest
 harness: opencode
 agent: issue-implementer
-provider_id: deepseek
-model_id: deepseek-v4-pro
+provider_id: opencode
+model_id: deepseek-v4-flash-free
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 7200
