@@ -6,8 +6,8 @@ git_ref: main
 agent_image: chetter-runner:latest
 harness: opencode
 agent: feature-creator
-provider_id: deepseek
-model_id: deepseek-v4-flash
+provider_id: opencode
+model_id: deepseek-v4-flash-free
 timeout_sec: 3600
 prompt: |-
   Propose and create ONE GitHub issue for the next most impactful item the project should work on.
