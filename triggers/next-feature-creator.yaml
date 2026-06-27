@@ -1,6 +1,6 @@
 name: next-feature-creator
 enabled: false
-cron_expr: "0 * * * *"
+cron_expr: "0 4 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 agent_image: chetter-runner:latest
