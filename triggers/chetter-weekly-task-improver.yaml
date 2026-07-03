@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
 # Trigger: weekly Chetter task improver
 #
 # Analyzes recent Chetter task outcomes and proposes small, reviewed changes to

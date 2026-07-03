@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=../../chetter/schemas/agent-frontmatter.schema.json
 description: Review open GitHub issues — validates relevance, closes stale issues, comments on scope changes, and updates descriptions.
 provider: opencode
 model: deepseek-v4-flash-free

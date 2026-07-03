@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
 # Trigger: issue implementation
 #
 # When the approved label is added to an issue (by the triage agent), an
@@ -19,7 +20,10 @@
 name: chetter-issue-implementer
 enabled: true
 trigger_type: issue
-trigger_config: '{"repo": "flatout-works/chetter", "event": "labeled", "match_labels": ["approved"]}'
+repo: flatout-works/chetter
+event: labeled
+match_labels:
+  - approved
 agent_image: chetter-runner:latest
 harness: opencode
 agent: issue-implementer

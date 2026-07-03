@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
 name: next-feature-creator
 enabled: false
 cron_expr: "0 * * * *"

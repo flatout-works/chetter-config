@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
 # Trigger: nightly issue stale check
 #
 # Reviews all open GitHub issues and validates they are still relevant

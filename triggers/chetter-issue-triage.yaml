@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
 # Trigger: issue triage with Kimi K2.6
 #
 # When a new issue is created, an agent assesses the issue, produces a
@@ -17,7 +18,8 @@
 name: chetter-issue-triage
 enabled: true
 trigger_type: issue
-trigger_config: '{"repo": "flatout-works/chetter", "event": "opened"}'
+repo: flatout-works/chetter
+event: opened
 agent_image: chetter-runner:latest
 harness: opencode
 agent: issue-triage
