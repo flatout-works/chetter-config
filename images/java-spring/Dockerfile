@@ -37,9 +37,8 @@ RUN curl -fsSL "https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries
 
 # Gradle
 ARG GRADLE_VERSION=8.12
-RUN curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -o /tmp/gradle.zip \
-    && unzip -q /tmp/gradle.zip -d /usr/local \
-    && rm /tmp/gradle.zip \
+RUN curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.tar.gz" \
+    | tar -C /usr/local -xzf - \
     && ln -sf "/usr/local/gradle-${GRADLE_VERSION}/bin/gradle" /usr/local/bin/gradle
 
 # Liquibase CLI
