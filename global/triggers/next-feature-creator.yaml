@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
+name: next-feature-creator
+enabled: false
+cron_expr: "0 4 * * *"
+git_url: https://github.com/flatout-works/chetter
+git_ref: main
+agent_image: chetter-runner:latest
+harness: opencode
+agent: feature-creator
+provider_id: opencode
+model_id: deepseek-v4-flash-free
+timeout_sec: 3600
+prompt: |-
+  Propose and create ONE GitHub issue for the next most impactful item the project should work on.
+
+  GITHUB_REPO=flatout-works/chetter
+
+  ## Bounded analysis (complete within 8 minutes)
+
+  ### 1. Surface-level scan (parallel, via sub-agents)
+  Launch TWO sub-agents simultaneously to gather input in parallel:
+
+  **Sub-agent A — Issues & docs:**
+  - Run `gh issue list --state open --limit 30 --json number,title,labels,updatedAt` to see what's already open.
+  - Read `docs/` directory entries to understand planned features and known gaps.
+
+  **Sub-agent B — Recent trajectory:**
+  - Read `CHANGELOG.md` and `AGENTS.md` to understand recent changes and project structure.
+  - Run `git log --since="7 days ago" --oneline --no-merges | head -30` for the commit narrative.
+
+  ### 2. Synthesize findings
+  After both sub-agents return, identify 2-3 candidate items. Evaluate each against:
+  - **Impact**: How many users/workflows does it affect?
+  - **Novelty**: Is an issue for this already open? Skip if so.
+  - **Scope**: Is it actionable in a single PR? Prefer concrete fixes over vague epics.
+
+  Priority order: operational resilience > missing features > refactoring > docs.
+
+  ### 3. Create the issue
+  Pick the SINGLE highest-value candidate and create it using `chetter_create_issue`:
+  - `repo="flatout-works/chetter"`
+  - `title="..."`
+  - `body="..."` (include Summary, Acceptance Criteria, Rationale sections)
+  - Optional `labels` (bug, enhancement, docs, etc.)
+
+  ### Guardrails
+  - Do NOT grep/scrape the codebase for TODOs/FIXMEs — trust issues, CHANGELOG, docs, and commit history as the signal.
+  - If all good candidates are already open issues, exit cleanly without creating a duplicate.
+  - Stop analysis after step 2 and make a decision. Do not iterate.

@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
+# yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
 # Trigger: issue implementation
 #
 # When the approved label is added to an issue (by the triage agent), an

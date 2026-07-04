@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
+# yaml-language-server: $schema=../../../../chetter/schemas/trigger.schema.json
 # Trigger: PR review for Chetter
 #
 # Reviews newly opened pull requests in flatout-works/chetter. The event is

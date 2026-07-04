@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
+# yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
 # Trigger: nightly documentation update from recent git changes
 #
 # Customize before enabling:

@@ -7,18 +7,25 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 ## Structure
 
 ```
-├── model-catalog.yaml      # AI model/provider registry
-├── agents/                 # Agent definitions (*.md)
-├── skills/                 # Skill definitions (SKILL.md under skill name directory)
-├── triggers/               # Trigger definitions (*.yaml or *.yml)
-├── task-templates/         # Reusable task prompt templates (*.md)
-└── images/                 # Agent dev container images (see below)
+├── model-catalog.yaml            # AI model/provider registry
+├── global/
+│   ├── agents/                   # Global agent definitions (*.md)
+│   ├── skills/                   # Global skill definitions (SKILL.md under skill name directory)
+│   └── triggers/                 # Global trigger definitions (*.yaml)
+├── groups/
+│   └── <team-name>/
+│       ├── agents/               # Team-scoped agent definitions
+│       ├── skills/               # Team-scoped skill definitions
+│       └── triggers/             # Team-scoped trigger definitions
+├── repos/
+│   └── <owner>/<repo>/
+│       ├── agents/               # Repo-scoped agent definitions
+│       ├── skills/               # Repo-scoped skill definitions
+│       └── triggers/             # Repo-scoped trigger definitions
+├── task-templates/               # (future) Reusable task prompt templates
+└── images/                       # Agent dev container Dockerfiles
     ├── golang/Dockerfile
-    ├── python/Dockerfile
-    ├── node/Dockerfile
-    ├── rust/Dockerfile
-    ├── minimal/Dockerfile
-    └── java-spring/Dockerfile
+    └── ...
 ```
 
 ## How definitions are used
@@ -26,10 +33,14 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 | Definition type | Synced to DB | Used at runtime |
 |---|---|---|
 | `model-catalog.yaml` | ✅ | Model/provider selection for tasks |
-| `agents/*.md` | ✅ `definitions` table | Injected into runner container per task |
-| `skills/*/SKILL.md` | ✅ `definitions` table | Injected into runner container per task |
-| `triggers/*.yaml` | ✅ `chetter_triggers` table | Activated in the cron/webhook scheduler |
+| `global/agents/*.md` | ✅ `definitions` table (scope=global) | Injected into runner container per task |
+| `global/skills/*/SKILL.md` | ✅ `definitions` table (scope=global) | Injected into runner container per task |
+| `global/triggers/*.yaml` | ✅ `chetter_triggers` table (no team) | Activated in the cron/webhook scheduler |
+| `groups/<team>/triggers/*.yaml` | ✅ `chetter_triggers` table (team-owned) | Activated with team_id set for scoped access |
+| `repos/<owner>/<repo>/triggers/*.yaml` | ✅ `chetter_triggers` table (repo-scoped) | Activated with repo metadata for filtering |
 | `task-templates/*.md` | ✅ `definitions` table | *(stored, runtime usage pending)* |
+
+Team-scoped triggers (`groups/<team>/triggers/*.yaml`) are materialized with the matching team's `team_id`, so only members of that team see them in their filtered views during task submission.
 
 ## Agent dev container images
 
@@ -71,8 +82,10 @@ Chetter validates synced definition files before materializing them. Schema refe
 | File | Schema |
 |---|---|
 | `model-catalog.yaml` | `../chetter/schemas/model-catalog.schema.json` |
-| `triggers/*.yaml` | `../../chetter/schemas/trigger.schema.json` |
-| Agent YAML frontmatter in `agents/*.md` | `../../chetter/schemas/agent-frontmatter.schema.json` |
+| `global/triggers/*.yaml` | `../../../chetter/schemas/trigger.schema.json` |
+| `groups/<team>/triggers/*.yaml` | `../../../../chetter/schemas/trigger.schema.json` |
+| `repos/<owner>/<repo>/triggers/*.yaml` | `../../../../../chetter/schemas/trigger.schema.json` |
+| Agent YAML frontmatter in `global/agents/*.md` | `../../../chetter/schemas/agent-frontmatter.schema.json` |
 
 Validation failures reject the sync, leaving the previously active definitions in place.
 

@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
+# yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
 # Trigger: bug issue implementation
 #
 # When the bug label is added to an issue, an agent reads the issue,
