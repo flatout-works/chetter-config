@@ -11,7 +11,14 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 ├── global/
 │   ├── agents/                   # Global agent definitions (*.md)
 │   ├── skills/                   # Global skill definitions (SKILL.md under skill name directory)
-│   └── triggers/                 # Global trigger definitions (*.yaml)
+│   ├── triggers/                 # Global trigger definitions (*.yaml)
+│   └── images/                   # Global agent dev container Dockerfiles
+│       ├── golang/Dockerfile
+│       ├── python/Dockerfile
+│       ├── node/Dockerfile
+│       ├── rust/Dockerfile
+│       ├── minimal/Dockerfile
+│       └── java-spring/Dockerfile
 ├── groups/
 │   └── <team-name>/
 │       ├── agents/               # Team-scoped agent definitions
@@ -44,7 +51,7 @@ Team-scoped triggers (`groups/<team>/triggers/*.yaml`) are materialized with the
 
 ## Agent dev container images
 
-The `images/` directory holds Dockerfiles for stack-specific agent runtime images.
+The `global/images/` directory holds Dockerfiles for stack-specific agent runtime images.
 Each one inherits from `ghcr.io/flatout-works/chetter-agent-base:main` which provides
 the shared harness CLIs (opencode, claude-code, codewhale, pi) and common tooling.
 

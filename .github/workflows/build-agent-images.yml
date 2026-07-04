@@ -2,7 +2,7 @@ name: Build agent images
 on:
   push:
     branches: [main]
-    paths: ["images/**"]
+    paths: ["global/images/**"]
   workflow_dispatch:
 
 permissions:
@@ -63,7 +63,7 @@ jobs:
           MAIN_TAG="${{ env.REGISTRY }}/${{ env.ORG }}/chetter-agent:${{ matrix.variant }}"
           docker build \
             --build-arg BASE_IMAGE="${{ env.BASE_IMAGE }}" \
-            -f "images/${{ matrix.variant }}/Dockerfile" \
+            -f "global/images/${{ matrix.variant }}/Dockerfile" \
             -t "$SHA_TAG" \
             -t "$MAIN_TAG" .
           docker push "$SHA_TAG"
