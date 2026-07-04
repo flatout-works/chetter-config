@@ -6,16 +6,20 @@
 # `chetter-review` label when a review starts, and matching every PR event would
 # also react to that label event and risk duplicate review tasks.
 
-name: flatout-works-chetter-pr-review
+name: chetter-pr-review
 enabled: true
 trigger_type: pr_review
 repo: flatout-works/chetter
 event: opened
 git_url: https://github.com/flatout-works/chetter.git
 git_ref: main
-agent_image: chetter-runner:latest
+agent_image: chetter-agent:golang
 harness: opencode
 agent: pr-reviewer
-provider_id: synthetic
-model_id: hf:zai-org/GLM-5.2
+provider_id: opencode
+model_id: deepseek-v4-flash-free
 timeout_sec: 3600
+skills:
+  - issue-implementer
+prompt: |-
+  You are doing a PR review for an opened PR.
