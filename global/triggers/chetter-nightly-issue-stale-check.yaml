@@ -20,7 +20,7 @@ enabled: true
 cron_expr: "0 6 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
-agent_image: chetter-runner:latest
+agent_image: chetter-agent:golang
 harness: opencode
 agent: issue-stale-check
 provider_id: opencode

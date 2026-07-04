@@ -4,7 +4,7 @@ enabled: false
 cron_expr: "0 4 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
-agent_image: chetter-runner:latest
+agent_image: chetter-agent:golang
 harness: opencode
 agent: feature-creator
 provider_id: opencode
