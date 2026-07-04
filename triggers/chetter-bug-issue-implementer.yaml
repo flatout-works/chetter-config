@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
 # Trigger: bug issue implementation
 #
 # When the bug label is added to an issue, an agent reads the issue,
@@ -6,7 +7,10 @@
 name: chetter-bug-issue-implementer
 enabled: true
 trigger_type: issue
-trigger_config: '{"repo": "flatout-works/chetter", "event": "labeled", "match_labels": ["bug"]}'
+repo: flatout-works/chetter
+event: labeled
+match_labels:
+  - bug
 agent_image: chetter-runner:latest
 harness: opencode
 agent: issue-implementer

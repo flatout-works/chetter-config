@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=../../chetter/schemas/trigger.schema.json
+# Trigger: PR review for Chetter
+#
+# Reviews newly opened pull requests in flatout-works/chetter. The event is
+# intentionally `opened` rather than empty: the webhook adds the
+# `chetter-review` label when a review starts, and matching every PR event would
+# also react to that label event and risk duplicate review tasks.
+
+name: flatout-works-chetter-pr-review
+enabled: true
+trigger_type: pr_review
+repo: flatout-works/chetter
+event: opened
+git_url: https://github.com/flatout-works/chetter.git
+git_ref: main
+agent_image: chetter-runner:latest
+harness: opencode
+agent: pr-reviewer
+provider_id: synthetic
+model_id: hf:zai-org/GLM-5.2
+timeout_sec: 3600

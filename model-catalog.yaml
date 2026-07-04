@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../chetter/schemas/model-catalog.schema.json
 version: 1
 default_provider: synthetic
 default_model: hf:moonshotai/Kimi-K2.6

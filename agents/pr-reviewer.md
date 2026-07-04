@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=../../chetter/schemas/agent-frontmatter.schema.json
 description: Deep PR review — correctness, security, performance, error handling, style. Posts structured review and approves or requests changes.
 provider: opencode
 model: deepseek-v4-flash-free
@@ -75,18 +76,16 @@ Pick the components the PR actually changes. Don't run all three if the PR only 
 
 ### 5. Post the Review
 
-Use `gh pr review` to post your review:
+Post the review with the `chetter_pr_review` MCP tool. Do not use `gh pr review`,
+and do not manually add a Chetter footer; the tool adds the canonical footer and
+records audit/artifact metadata.
 
-```bash
-# For approval:
-gh pr review $PR_NUMBER --approve --body "..."
-
-# For changes requested:
-gh pr review $PR_NUMBER --request-changes --body "..."
-
-# For neutral comment (no approve/block):
-gh pr review $PR_NUMBER --comment --body "..."
-```
+Call `chetter_pr_review` with:
+- `task_id=$CHETTER_TASK_ID`
+- `repo=$GITHUB_REPO`
+- `pr_number=$PR_NUMBER`
+- `event="APPROVE"`, `event="REQUEST_CHANGES"`, or `event="COMMENT"`
+- `body="..."`
 
 The review body must include:
 - **Overall assessment** — approve / request-changes / comment

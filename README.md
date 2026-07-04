@@ -64,6 +64,18 @@ and a `:$variant-$sha` digest pin for reproducible rollbacks.
 
 Do not store secret values in this repository. Use environment variable names such as `api_key_env: ANTHROPIC_API_KEY`. The `api_key_env` value in `model-catalog.yaml` tells Chetter which environment variable to read from — the actual key stays in your deployment environment.
 
+## Validation
+
+Chetter validates synced definition files before materializing them. Schema references in this repository point to the adjacent Chetter checkout:
+
+| File | Schema |
+|---|---|
+| `model-catalog.yaml` | `../chetter/schemas/model-catalog.schema.json` |
+| `triggers/*.yaml` | `../../chetter/schemas/trigger.schema.json` |
+| Agent YAML frontmatter in `agents/*.md` | `../../chetter/schemas/agent-frontmatter.schema.json` |
+
+Validation failures reject the sync, leaving the previously active definitions in place.
+
 ## Example repo
 
 See `examples/config-repo/` in the main Chetter repository for a starter template.
