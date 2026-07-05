@@ -30,8 +30,8 @@ ENV JAVA_HOME=/usr/lib/jvm/temurin-${JDK_VERSION}-jdk-amd64
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Maven
-ARG MAVEN_VERSION=3.9.8
-RUN curl -fsSL "https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
+ARG MAVEN_VERSION=3.9.9
+RUN curl -fsSL "https://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz" \
     | tar -C /usr/local -xzf - \
     && ln -sf "/usr/local/apache-maven-${MAVEN_VERSION}/bin/mvn" /usr/local/bin/mvn
 
