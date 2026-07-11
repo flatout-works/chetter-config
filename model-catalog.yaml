@@ -1,12 +1,12 @@
 # yaml-language-server: $schema=../chetter/schemas/model-catalog.schema.json
 version: 1
 default_provider: synthetic
-default_model: hf:moonshotai/Kimi-K2.6
+default_model: hf:moonshotai/Kimi-K2.7-Code
 
 defaults:
   opencode:
     provider: synthetic
-    model: hf:moonshotai/Kimi-K2.6
+    model: hf:moonshotai/Kimi-K2.7-Code
   pi:
     provider: deepseek
     model: deepseek-v4-pro
@@ -19,7 +19,7 @@ providers:
     name: Synthetic
     kind: openai_compatible
     models:
-      - id: hf:moonshotai/Kimi-K2.6
+      - id: hf:moonshotai/Kimi-K2.7-Code
       - id: hf:zai-org/GLM-5.2
 
   opencode:
