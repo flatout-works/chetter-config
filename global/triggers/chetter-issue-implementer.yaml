@@ -31,7 +31,7 @@ provider_id: opencode
 model_id: deepseek-v4-flash-free
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
-timeout_sec: 7200
+timeout_sec: 14400
 skills:
   - issue-implementer
 prompt: |-
