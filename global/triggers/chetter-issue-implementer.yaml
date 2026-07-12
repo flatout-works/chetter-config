@@ -27,8 +27,8 @@ match_labels:
 agent_image: chetter-agent:golang
 harness: opencode
 agent: issue-implementer
-provider_id: opencode
-model_id: deepseek-v4-flash-free
+provider_id: deepseek
+model_id: deepseek-v4-pro
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 14400
@@ -37,7 +37,7 @@ skills:
 prompt: |-
   You are implementing a solution for a GitHub issue that has been
   approved for implementation after triage. You have access to the
-  repository and the `gh` CLI for read-only inspection.
+  repository and the `gh` CLI.
 
   ## Context
 
@@ -77,19 +77,18 @@ prompt: |-
   make check
   ```
 
-  If tests fail, fix them. Do not commit broken code.
+  If tests fail, fix them. Do not commit broken code. Make sure to add new
+  tests that cover the new functionality.
 
    ### 4. Create a PR
 
    Create a branch named `fix/issue-ISSUE_NUMBER-short-description`,
    commit with a descriptive message referencing the issue, push, and
-   open a pull request against `main` using the `chetter_create_pr` MCP tool.
+   open a pull request against `main`.
 
    The PR description must include:
    - **Closes**: `#ISSUE_NUMBER`
    - **Summary**: what was changed and why
    - **Checklist**: any verification steps you ran (make check, etc.)
-   Call `chetter_create_pr` with `repo=$GITHUB_REPO`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
-  Do not push directly to main. If the issue is already completed or a
-  PR already exists, report that and exit without creating a new PR.
+  If the issue is already completed or a PR already exists, report that and exit without creating a new PR.
