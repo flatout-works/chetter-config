@@ -13,8 +13,6 @@ timeout_sec: 7200
 prompt: |-
   Review all changes made to the repository in the last 24 hours and update the website and technical architecture presentation so they accurately reflect the current state of the product.
 
-  GITHUB_REPO=flatout-works/chetter
-
   ## Step 1: Understand what changed
   Run:
   ```bash
@@ -36,8 +34,5 @@ prompt: |-
   Update `website/technical.html` to accurately reflect the current system architecture and technologies in use. Keep the existing slide structure and visual style, and keep it consistent with the main website's design language.
 
    ## Step 5: Commit and create PR
-   Commit all changes to a new branch named `docs/nightly-website-update-{YYYY-MM-DD}`, push, and create a GitHub PR against `main` with a summary of what was updated and why using the `chetter_create_pr` MCP tool.
-
-    Call `chetter_create_pr` with `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
-
-  Do NOT push directly to main. Keep changes focused on documentation/marketing accuracy only. If no significant changes occurred, still review materials for accuracy and create a PR noting "no material changes — verified accuracy".
+   Commit all changes to a new branch named `docs/nightly-website-update-{YYYY-MM-DD}`, push, and create a GitHub PR against `main` with a summary of what was updated and why.
+   Keep changes focused on documentation/marketing accuracy only. If no significant changes occurred, still review materials for accuracy and create a PR noting "no material changes — verified accuracy".
