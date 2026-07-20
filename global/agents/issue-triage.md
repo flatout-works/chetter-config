@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
+identity: primary-bot
 description: Triages GitHub issues — classifies, prioritizes, produces a plan, and posts a structured comment. Use for issue triage and initial assessment tasks.
 provider: opencode
 model: deepseek-v4-flash-free

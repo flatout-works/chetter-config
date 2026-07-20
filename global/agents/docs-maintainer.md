@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
+identity: primary-bot
 description: Updates documentation from recent code and product changes. Use for docs, architecture, product, process, storage, and AGENTS.md maintenance tasks.
 provider: opencode
 model: deepseek-v4-flash-free
