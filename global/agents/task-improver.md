@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
+identity: primary-bot
 description: Analyzes Chetter task outcomes, triggers, exports, and definition files to propose reviewed improvements to agents, skills, prompts, and triggers.
 mode: primary
 permission:

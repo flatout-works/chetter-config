@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
+identity: primary-bot
 description: Deep PR review — correctness, security, performance, error handling, style. Posts structured review and approves or requests changes.
 provider: opencode
 model: deepseek-v4-flash-free

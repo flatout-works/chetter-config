@@ -82,6 +82,8 @@ and a `:$variant-$sha` digest pin for reproducible rollbacks.
 
 Do not store secret values in this repository. Use environment variable names such as `api_key_env: ANTHROPIC_API_KEY`. The `api_key_env` value in `model-catalog.yaml` tells Chetter which environment variable to read from — the actual key stays in your deployment environment.
 
+Every agent definition must declare an `identity` in its YAML frontmatter. Identity credentials are managed server-side and must not be added to this repository.
+
 ## Validation
 
 Chetter validates synced definition files before materializing them. Schema references in this repository point to the adjacent Chetter checkout:

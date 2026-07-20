@@ -1,5 +1,6 @@
 ---
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
+identity: primary-bot
 description: Review open GitHub issues — validates relevance, closes stale issues, comments on scope changes, and updates descriptions.
 provider: deepseek
 model: deepseek-v4-flash
