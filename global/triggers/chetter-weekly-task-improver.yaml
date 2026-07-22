@@ -10,7 +10,7 @@
 name: chetter-weekly-task-improver
 enabled: true
 cron_expr: "0 2 * * 0"
-git_url: https://github.com/flatout-works/chetter
+git_url: https://github.com/flatout-works/chetter-config
 git_ref: main
 agent_image: chetter-agent:golang
 harness: opencode
@@ -23,15 +23,21 @@ skills:
 prompt: |-
   Run the weekly Chetter task-improver workflow.
 
+  GITHUB_REPO=flatout-works/chetter-config
+
   Analyze recent Chetter tasks, trigger history, session exports, and active
   definition files. Use the Chetter MCP definition tools to inspect indexed
   sources and definitions, then correlate task outcomes with the trigger,
   agent, skill, prompt, or template that produced them.
 
   If there is clear evidence for a small improvement, edit the relevant
-  definition files in a branch and open a pull request with evidence. If no
-  safe improvement is justified, leave files unchanged and report what you
-  inspected.
+  definition files in this repository, create a branch, commit and push the
+  change, then open a pull request against `main` with evidence using the
+  `chetter_create_pr` MCP tool. Call `chetter_create_pr` with
+  `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, the pushed branch as
+  `head`, and `base="main"`. Do not use `gh pr create` and do not manually add
+  the Chetter footer. If no safe improvement is justified, leave files
+  unchanged and report what you inspected.
 
   Do not directly mutate production definitions in the database. Durable
   changes must go through a Git pull request.
