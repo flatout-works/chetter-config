@@ -15,27 +15,7 @@ env:
   BASE_IMAGE: ghcr.io/flatout-works/chetter-agent-base:main
 
 jobs:
-  pull-base:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log into GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull agent-base image
-        run: |
-          docker pull "${{ env.BASE_IMAGE }}" || {
-            echo "::error::chetter-agent-base:main not found on GHCR."
-            echo "::error::The chetter CI must build and push it first."
-            echo "::error::Run the Chetter workflow on flatout-works/chetter before retrying."
-            exit 1
-          }
-
   build:
-    needs: [pull-base]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
