@@ -32,8 +32,6 @@ model_id: deepseek-v4-pro
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 14400
-skills:
-  - issue-implementer
 prompt: |-
   You are implementing a solution for a GitHub issue that has been
   approved for implementation after triage. You have access to the
