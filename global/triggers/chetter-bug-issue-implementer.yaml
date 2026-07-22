@@ -11,7 +11,7 @@ repo: flatout-works/chetter
 event: labeled
 match_labels:
   - bug
-agent_image: chetter-agent:golang
+agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-implementer
 provider_id: opencode

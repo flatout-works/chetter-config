@@ -2,8 +2,6 @@
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
 identity: primary-bot
 description: Audits Go code for correctness, maintainability, duplication, unclear naming, error handling, and focused refactors. Use for code quality audit tasks.
-provider: opencode
-model: deepseek-v4-flash-free
 mode: primary
 permission:
   edit: allow

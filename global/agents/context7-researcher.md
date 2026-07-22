@@ -2,8 +2,6 @@
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
 identity: primary-bot
 description: Uses the public Context7 MCP server to retrieve current library documentation and reports the returned evidence.
-provider: opencode
-model: deepseek-v4-flash-free
 mode: primary
 mcp_endpoints:
   - context7

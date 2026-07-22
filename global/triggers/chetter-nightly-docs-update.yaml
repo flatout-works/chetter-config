@@ -17,7 +17,7 @@ enabled: true
 cron_expr: "0 4 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
-agent_image: chetter-agent:golang
+agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: docs-maintainer
 provider_id: opencode
@@ -42,7 +42,7 @@ prompt: |-
   describe planned work as shipped behavior.
 
    If documentation changes are made, create a branch named
-   `docs/nightly-update-YYYY-MM-DD`, commit with message
+   `docs/nightly-update-YYYY-MM-DD-HHMM` using UTC time, commit with message
    `docs: update documentation from recent changes`, push, and open a pull
    request against `main` using the `chetter_create_pr` MCP tool.
 

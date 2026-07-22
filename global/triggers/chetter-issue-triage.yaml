@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
-# Trigger: issue triage with Kimi K2.6
+# Trigger: issue triage
 #
 # When a new issue is created, an agent assesses the issue, produces a
 # plan, and posts a triage comment with findings, feedback, and next steps.
@@ -7,8 +7,8 @@
 # Customize before enabling:
 #   git_url      - your repository URL or leave empty (issue tasks don't clone)
 #   agent_image  - runner image (get from your Chetter admin or build your own)
-#   provider_id  - LLM provider (synthetic for Kimi, or your configured provider)
-#   model_id     - model identifier (e.g. hf:moonshotai/Kimi-K2.6)
+#   provider_id  - configured LLM provider
+#   model_id     - model identifier from the active model catalog
 #   timeout_sec  - adjust for issue complexity (3600 = 1 hour recommended)
 #   skills       - skill hints for the runner (optional)
 #
@@ -20,14 +20,12 @@ enabled: true
 trigger_type: issue
 repo: flatout-works/chetter
 event: opened
-agent_image: chetter-agent:golang
+agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-triage
 provider_id: opencode
 model_id: deepseek-v4-flash-free
 timeout_sec: 3600
-skills:
-  - issue-triage
 prompt: |-
   You are performing an initial issue triage. You have access to the
   repository and the `gh` CLI for read-only inspection.

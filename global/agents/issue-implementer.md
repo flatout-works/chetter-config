@@ -2,8 +2,6 @@
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
 identity: primary-bot
 description: Implements solutions for GitHub issues. Reads the issue and triage comments, produces code changes, and opens a PR. Use for issue implementation tasks.
-provider: opencode
-model: deepseek-v4-flash-free
 mode: primary
 permission:
   edit: allow

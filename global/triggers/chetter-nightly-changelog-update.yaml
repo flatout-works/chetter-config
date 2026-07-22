@@ -17,7 +17,7 @@ enabled: true
 cron_expr: "0 3 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
-agent_image: chetter-agent:golang
+agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: changelog-maintainer
 provider_id: opencode
@@ -41,7 +41,7 @@ prompt: |-
   churn unless it affects users, operators, contributors, or release notes.
 
    If `CHANGELOG.md` is created or modified, create a branch named
-   `docs/update-changelog-YYYY-MM-DD`, commit with message
+   `docs/update-changelog-YYYY-MM-DD-HHMM` using UTC time, commit with message
    `docs: update changelog from recent history`, push, and open a pull request
    against `main` using the `chetter_create_pr` MCP tool.
 

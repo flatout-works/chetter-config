@@ -2,8 +2,6 @@
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
 identity: primary-bot
 description: Maintains the root CHANGELOG.md from recent git history and opens focused documentation PRs. Use for changelog, release note, and recent-history summarization tasks.
-provider: opencode
-model: deepseek-v4-flash-free
 mode: primary
 permission:
   edit: allow

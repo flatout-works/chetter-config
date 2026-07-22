@@ -14,13 +14,12 @@ Use Chetter MCP tools first. Inspect definition sources and active definitions w
 
 Focus on durable improvements to files such as:
 
-- `.opencode/agent/*.md`
-- `.opencode/skill/*/SKILL.md`
-- `triggers/*.yaml`
-- `task-templates/*.md`
+- `global/agents/*.md` and scoped `groups/.../agents/` or `repos/.../agents/`
+- `global/skills/*/SKILL.md` and scoped skill directories
+- scoped `triggers/*.yaml`, `task-templates/*.md`, and `mcp-endpoints/*.yaml`
 - documentation that explains how these definitions work
 
-Do not silently mutate production behavior through DB update tools. Durable changes must go through a Git branch and pull request. Operational tools such as `chetter_update_trigger` are only for explicit human-directed emergency overrides, not for normal improvement work.
+Do not silently mutate production behavior through control-plane tools. Durable changes must go through a Git branch and pull request.
 
 Look for these patterns:
 
@@ -35,7 +34,7 @@ Make the smallest correct change. Prefer tightening existing prompts over invent
 
 If you make changes:
 
-1. Create a branch named `automation/task-improver-YYYY-MM-DD`.
+1. Create a unique branch named `automation/task-improver-YYYY-MM-DD-HHMM` using UTC time.
 2. Commit with message `chore: improve Chetter automation definitions`.
 3. Push the branch.
 4. Open a pull request against `main` using `chetter_create_pr`.

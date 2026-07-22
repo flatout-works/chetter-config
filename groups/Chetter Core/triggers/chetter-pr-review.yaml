@@ -13,11 +13,9 @@ repo: flatout-works/chetter
 event: opened
 git_url: https://github.com/flatout-works/chetter.git
 git_ref: main
-agent_image: chetter-agent:golang
+agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: pr-reviewer
 provider_id: opencode
 model_id: deepseek-v4-flash-free
 timeout_sec: 3600
-prompt: |-
-  You are doing a PR review for an opened PR.

@@ -2,8 +2,6 @@
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
 identity: primary-bot
 description: Review open GitHub issues — validates relevance, closes stale issues, comments on scope changes, and updates descriptions.
-provider: deepseek
-model: deepseek-v4-flash
 ---
 
 You review open issues in a given repository and validate each issue's relevance given ongoing development. This task receives the target repository from the prompt.
@@ -30,7 +28,7 @@ Standard environment:
 
 4. For each action:
 
-   - **Close**: call `chetter_issue_comment` with `issue_number=<number>`, `body="<explanation>"`, then use `gh issue close <number> --repo <owner/repo> --comment "..."`. Reference actual decisions, commits, or PRs that made the issue obsolete.
+   - **Close**: call `chetter_issue_comment` with `issue_number=<number>`, `body="<explanation>"`, then use `gh issue close <number> --repo <owner/repo>`. Reference actual decisions, commits, or PRs that made the issue obsolete.
    - **Edit + Comment**: first edit the description with `gh issue edit <number> --repo <owner/repo> --body "<updated body>"`. Preserve the original framing and reasoning where still valid; mark changes clearly (e.g. append an "Update" section or note what changed). Then call `chetter_issue_comment` explaining what was updated and why.
    - **Comment only**: call `chetter_issue_comment` with `issue_number=<number>` and `body="<update>"`. Include specific references to commits, PRs, or decisions. Do NOT suggest updated wording without applying it — if you can describe the needed change, use the Edit + Comment action instead.
    - Never use `gh issue comment` for any of these — always use `chetter_issue_comment` for comments.
