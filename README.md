@@ -12,6 +12,8 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 │   ├── agents/                   # Global agent definitions (*.md)
 │   ├── skills/                   # Global skill definitions (SKILL.md under skill name directory)
 │   ├── triggers/                 # Global trigger definitions (*.yaml)
+│   ├── mcp-endpoints/            # Global MCP endpoint definitions (*.yaml)
+│   ├── task-templates/           # Global reusable task prompt templates
 │   └── images/                   # Global agent dev container Dockerfiles
 │       ├── golang/Dockerfile
 │       ├── python/Dockerfile
@@ -23,13 +25,15 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 │   └── <team-name>/
 │       ├── agents/               # Team-scoped agent definitions
 │       ├── skills/               # Team-scoped skill definitions
-│       └── triggers/             # Team-scoped trigger definitions
+│       ├── triggers/             # Team-scoped trigger definitions
+│       ├── mcp-endpoints/        # Team-scoped MCP endpoint definitions
+│       └── task-templates/       # Team-scoped task prompt templates
 ├── repos/
 │   └── <owner>/<repo>/
 │       ├── agents/               # Repo-scoped agent definitions
 │       ├── skills/               # Repo-scoped skill definitions
-│       └── triggers/             # Repo-scoped trigger definitions
-├── task-templates/               # (future) Reusable task prompt templates
+│       ├── triggers/             # Repo-scoped trigger definitions
+│       └── task-templates/       # Repo-scoped task prompt templates
 └── images/                       # Agent dev container Dockerfiles
     ├── golang/Dockerfile
     └── ...
@@ -43,9 +47,10 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 | `global/agents/*.md` | ✅ `definitions` table (scope=global) | Injected into runner container per task |
 | `global/skills/*/SKILL.md` | ✅ `definitions` table (scope=global) | Injected into runner container per task |
 | `global/triggers/*.yaml` | ✅ `chetter_triggers` table (no team) | Activated in the cron/webhook scheduler |
+| `global/mcp-endpoints/*.yaml` | ✅ `definitions` table (scope=global) | Mounted into tasks through agent frontmatter or task options |
 | `groups/<team>/triggers/*.yaml` | ✅ `chetter_triggers` table (team-owned) | Activated with team_id set for scoped access |
 | `repos/<owner>/<repo>/triggers/*.yaml` | ✅ `chetter_triggers` table (repo-scoped) | Activated with repo metadata for filtering |
-| `task-templates/*.md` | ✅ `definitions` table | *(stored, runtime usage pending)* |
+| Scoped `task-templates/*.md` | ✅ `definitions` table | *(stored, runtime usage pending)* |
 
 Team-scoped triggers (`groups/<team>/triggers/*.yaml`) are materialized with the matching team's `team_id`, so only members of that team see them in their filtered views during task submission.
 
@@ -92,6 +97,7 @@ Chetter validates synced definition files before materializing them. Schema refe
 |---|---|
 | `model-catalog.yaml` | `../chetter/schemas/model-catalog.schema.json` |
 | `global/triggers/*.yaml` | `../../../chetter/schemas/trigger.schema.json` |
+| `global/mcp-endpoints/*.yaml` | `../../../chetter/schemas/mcp-endpoint.schema.json` |
 | `groups/<team>/triggers/*.yaml` | `../../../../chetter/schemas/trigger.schema.json` |
 | `repos/<owner>/<repo>/triggers/*.yaml` | `../../../../../chetter/schemas/trigger.schema.json` |
 | Agent YAML frontmatter in `global/agents/*.md` | `../../../chetter/schemas/agent-frontmatter.schema.json` |
