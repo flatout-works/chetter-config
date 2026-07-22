@@ -2,7 +2,7 @@
 
 Git-backed runtime configuration for Chetter. The MCP server syncs from this repository when `DEFINITIONS_REPO` points here.
 
-**NOTE: This config repo backs the Chetter instance that works "on itself" used by the team developing Chetter**
+**Note:** This repository backs the Chetter instance used by the team developing Chetter itself.
 
 ## Structure
 
@@ -34,9 +34,6 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 │       ├── skills/               # Repo-scoped skill definitions
 │       ├── triggers/             # Repo-scoped trigger definitions
 │       └── task-templates/       # Repo-scoped task prompt templates
-└── images/                       # Agent dev container Dockerfiles
-    ├── golang/Dockerfile
-    └── ...
 ```
 
 ## How definitions are used
@@ -50,7 +47,7 @@ Git-backed runtime configuration for Chetter. The MCP server syncs from this rep
 | `global/mcp-endpoints/*.yaml` | ✅ `definitions` table (scope=global) | Mounted into tasks through agent frontmatter or task options |
 | `groups/<team>/triggers/*.yaml` | ✅ `chetter_triggers` table (team-owned) | Activated with team_id set for scoped access |
 | `repos/<owner>/<repo>/triggers/*.yaml` | ✅ `chetter_triggers` table (repo-scoped) | Activated with repo metadata for filtering |
-| Scoped `task-templates/*.md` | ✅ `definitions` table | *(stored, runtime usage pending)* |
+| Scoped `task-templates/*.md` | `definitions` table | Reusable prompt definitions exposed through the definitions API |
 
 Team-scoped triggers (`groups/<team>/triggers/*.yaml`) are materialized with the matching team's `team_id`, so only members of that team see them in their filtered views during task submission.
 
@@ -80,8 +77,20 @@ the language/toolchain packages you need.
 
 A GitHub Actions workflow (`.github/workflows/build-agent-images.yml`) builds and
 pushes all variant images to `ghcr.io/flatout-works/chetter-agent:$variant` on
-every push to `main` that changes `images/**`. Each push gets both a `:main` tag
-and a `:$variant-$sha` digest pin for reproducible rollbacks.
+every push to `main` that changes `global/images/**`. Each build also gets a
+`:$variant-$sha` tag for rollbacks.
+
+Use these agent images for tasks. Do not use `chetter-runner`, which is the
+tight fleet daemon image and does not contain task harnesses.
+
+## Instance prerequisites
+
+- Create the `Chetter Core` team before syncing because the PR review trigger is team-scoped under `groups/Chetter Core/`.
+- Create a global or team-applicable managed Git identity named `primary-bot`; all agent definitions reference it.
+- Provide the credential environment variables named by `model-catalog.yaml` to applicable runners.
+- Configure the GitHub App before enabling issue and PR triggers.
+- Configure Arcane if image vulnerability scanning is required. The vulnerability workflow continues with dependency scanning when Arcane tools are unavailable.
+- Provide any `auth.token_env` used by MCP endpoint definitions to applicable runners.
 
 ## Security
 
@@ -91,7 +100,7 @@ Every agent definition must declare an `identity` in its YAML frontmatter. Ident
 
 ## Validation
 
-Chetter validates synced definition files before materializing them. Schema references in this repository point to the adjacent Chetter checkout:
+Chetter validates all synced definition files before materializing them. Most schema references in this repository point to an adjacent Chetter checkout for local editor validation:
 
 | File | Schema |
 |---|---|
@@ -103,6 +112,10 @@ Chetter validates synced definition files before materializing them. Schema refe
 | Agent YAML frontmatter in `global/agents/*.md` | `../../../chetter/schemas/agent-frontmatter.schema.json` |
 
 Validation failures reject the sync, leaving the previously active definitions in place.
+
+Trigger names are instance-wide identifiers, not scope-qualified identifiers. Do not define the same trigger name in global, team, and repository scopes; a later materialized definition would replace the earlier one.
+
+Referenced agents, skills, MCP endpoints, teams, and managed Git identities must exist in an applicable scope. Missing skills are not installed automatically.
 
 ## Example repo
 
