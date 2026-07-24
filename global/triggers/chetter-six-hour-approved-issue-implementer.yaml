@@ -8,13 +8,12 @@ cron_expr: "0 */6 * * *"
 repo: flatout-works/chetter
 match_labels:
   - approved
-git_url: https://github.com/flatout-works/chetter
-git_ref: main
+git_url: https://github.com/flatout-works/chetter.git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: pi
 agent: issue-implementer
-provider_id: synthetic
-model_id: hf:zai-org/GLM-5.2
+provider_id: deepseek
+model_id: deepseek-v4-pro
 timeout_sec: 14400
 prompt: |-
   Implement exactly one approved GitHub issue in flatout-works/chetter.
