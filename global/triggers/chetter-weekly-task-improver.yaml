@@ -17,7 +17,7 @@ harness: opencode
 agent: task-improver
 provider_id: deepseek
 model_id: deepseek-v4-pro
-timeout_sec: 7200
+timeout_sec: 14400
 skills:
   - chetter
 prompt: |-
