@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
 # Trigger: weekly Chetter task improver
 #
-# Analyzes recent Chetter task outcomes and proposes small, reviewed changes to
-# agents, skills, prompts, triggers, or task templates.
+# Finds one repeated, definition-actionable failure pattern and proposes one
+# small reviewed change to the responsible trigger or agent.
 #
 # To create: chetter_create_trigger with these fields.
 # To change later: chetter_update_trigger with changed fields.
@@ -17,27 +17,42 @@ harness: opencode
 agent: task-improver
 provider_id: deepseek
 model_id: deepseek-v4-pro
-timeout_sec: 7200
+timeout_sec: 3600
 skills:
   - chetter
 prompt: |-
-  Run the weekly Chetter task-improver workflow.
+  Review mode: repeated failure correction.
 
   GITHUB_REPO=flatout-works/chetter-config
 
-  Analyze recent Chetter tasks, trigger history, session exports, and active
-  definition files. Use the Chetter MCP definition tools to inspect indexed
-  sources and definitions, then correlate task outcomes with the trigger,
-  agent, skill, prompt, or template that produced them.
+  Find and correct one repeated task failure caused by a trigger prompt or its
+  referenced agent definition.
 
-  If there is clear evidence for a small improvement, edit the relevant
-  definition files in this repository, create a branch, commit and push the
-  change, then open a pull request against `main` with evidence using the
-  `chetter_create_pr` MCP tool. Call `chetter_create_pr` with
+  ## Bounded procedure
+
+  1. Call `chetter_list_tasks` once with `status="error"` and `limit=20`.
+  2. From those results, identify one error pattern affecting at least two tasks
+     from the same trigger. Ignore lease expiry, runner availability, provider
+     outages, rate limits, and harness crashes unless the trigger selected a
+     known-incompatible model/harness combination.
+  3. If no repeated definition-actionable pattern exists, report the candidate
+     count and exit without changes.
+  4. Inspect at most three representative task IDs. Request only the progress,
+     events, or export needed to confirm the suspected root cause.
+  5. Read only the selected trigger file and its referenced agent file. Do not
+     enumerate or read unrelated definitions.
+  6. Make one focused correction in at most two files. Do not add new agents,
+     skills, triggers, or templates during this run.
+  7. Run `git diff --check` and verify changed YAML or frontmatter against the
+     repository schemas.
+
+  If the evidence supports the correction, create a branch, commit and push the
+  change, then open one pull request against `main` using `chetter_create_pr`.
+  Call `chetter_create_pr` with
   `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, the pushed branch as
   `head`, and `base="main"`. Do not use `gh pr create` and do not manually add
-  the Chetter footer. If no safe improvement is justified, leave files
-  unchanged and report what you inspected.
+  the Chetter footer. Include the inspected task IDs and repeated root cause in
+  the PR body.
 
   Do not directly mutate production definitions in the database. Durable
   changes must go through a Git pull request.

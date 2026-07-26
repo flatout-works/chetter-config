@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
+# Trigger: weekly Chetter task efficiency improver
+#
+# Selects one costly or stall-prone automation and proposes one small prompt or
+# agent change that reduces unnecessary exploration or tool use.
+
+name: chetter-weekly-task-efficiency-improver
+enabled: true
+cron_expr: "0 2 * * 3"
+git_url: https://github.com/flatout-works/chetter-config
+git_ref: main
+agent_image: ghcr.io/flatout-works/chetter-agent:golang
+harness: opencode
+agent: task-improver
+provider_id: deepseek
+model_id: deepseek-v4-pro
+timeout_sec: 3600
+skills:
+  - chetter
+prompt: |-
+  Review mode: prompt efficiency and stall prevention.
+
+  GITHUB_REPO=flatout-works/chetter-config
+
+  Find one automation whose prompt or agent definition causes repeated broad
+  exploration, excessive token use, or watchdog stalls, and make one focused
+  improvement.
+
+  ## Bounded procedure
+
+  1. Call `chetter_usage_summary` once with `group_by="trigger"` and
+     `since_hours=168` to identify the highest-cost active triggers.
+  2. Choose one trigger, then call `chetter_list_tasks` once for that trigger
+     with `limit=12`. Do not inspect any other trigger in this run.
+  3. Select at most three representative tasks showing high cost, long runtime,
+     repeated continuation prompts, a stuck classification, or extensive
+     investigation without an artifact.
+  4. Use task progress or exports only as needed to identify one repeated prompt
+     behavior. Do not collect a full task, session, or definition inventory.
+  5. Read only the selected trigger file and its referenced agent file.
+  6. If the behavior is not caused by those definitions, report the evidence
+     and exit without changes.
+  7. Otherwise tighten stopping rules, selection limits, or required procedure
+     in at most two files. Do not change model/provider selection and do not add
+     new definitions during this run.
+  8. Run `git diff --check` and verify changed YAML or frontmatter against the
+     repository schemas.
+
+  If the evidence supports the change, create a branch, commit and push it, then
+  open one pull request against `main` using `chetter_create_pr`. Call
+  `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`,
+  `repo="$GITHUB_REPO"`, the pushed branch as `head`, and `base="main"`. Do not
+  use `gh pr create` and do not manually add the Chetter footer. Include the
+  inspected task IDs, observed waste/stall pattern, and expected effect in the
+  PR body.
+
+  Do not directly mutate production definitions in the database. Durable
+  changes must go through a Git pull request.
