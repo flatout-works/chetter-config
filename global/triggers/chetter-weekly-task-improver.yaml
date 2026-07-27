@@ -17,7 +17,7 @@ harness: opencode
 agent: task-improver
 provider_id: deepseek
 model_id: deepseek-v4-pro
-timeout_sec: 3600
+timeout_sec: 2400
 skills:
   - chetter
 prompt: |-
@@ -30,17 +30,26 @@ prompt: |-
 
   ## Bounded procedure
 
-  1. Call `chetter_list_tasks` once with `status="error"` and `limit=20`.
-  2. From those results, identify one error pattern affecting at least two tasks
-     from the same trigger. Ignore lease expiry, runner availability, provider
-     outages, rate limits, and harness crashes unless the trigger selected a
-     known-incompatible model/harness combination.
+  1. Call `chetter_list_tasks` once with `status="error"` and `limit=12`.
+     From the results, discard every task whose `trigger_name` does not have a
+     corresponding definition file in this repository (look in
+     `global/triggers/`, `groups/*/triggers/`, `repos/*/triggers/`). Use one
+     `glob` call to confirm which trigger files exist here. If fewer than 2
+     tasks remain, exit cleanly.
+  2. From the remaining tasks, identify one error pattern affecting at least
+     two tasks from the same trigger. Ignore lease expiry, runner availability,
+     provider outages, rate limits, and harness crashes unless the trigger
+     selected a known-incompatible model/harness combination.
   3. If no repeated definition-actionable pattern exists, report the candidate
      count and exit without changes.
-  4. Inspect at most three representative task IDs. Request only the progress,
-     events, or export needed to confirm the suspected root cause.
+  4. Inspect at most three representative task IDs. Request only the progress
+     or events needed to confirm the suspected root cause. Never read full
+     task exports during discovery; use those only to verify a confirmed
+     hypothesis.
   5. Read only the selected trigger file and its referenced agent file. Do not
-     enumerate or read unrelated definitions.
+     enumerate or read unrelated definitions, search for schema files, or
+     consult the model catalog unless a model/harness incompatibility is the
+     confirmed hypothesis.
   6. Make one focused correction in at most two files. Do not add new agents,
      skills, triggers, or templates during this run.
   7. Run `git diff --check` and verify changed YAML or frontmatter against the
