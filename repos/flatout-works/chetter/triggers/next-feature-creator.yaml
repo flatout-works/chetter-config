@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
 name: next-feature-creator
-enabled: false
+enabled: true
 cron_expr: "0 4 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
