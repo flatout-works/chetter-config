@@ -7,8 +7,8 @@ git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: docs-maintainer
-provider_id: deepseek
-model_id: deepseek-v4-pro
+provider_id: synthetic
+model_id: hf:zai-org/GLM-5.2
 timeout_sec: 7200
 prompt: |-
   Review all changes made to the repository in the last 24 hours and update the website and technical architecture presentation so they accurately reflect the current state of the product.

@@ -23,8 +23,8 @@ event: opened
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-triage
-provider_id: opencode
-model_id: deepseek-v4-flash-free
+provider_id: synthetic
+model_id: hf:moonshotai/Kimi-K3
 timeout_sec: 3600
 prompt: |-
   You are performing an initial issue triage. You have access to the
@@ -80,16 +80,17 @@ prompt: |-
    to. If the issue is a duplicate, note the duplicate reference and suggest
    closing.
 
-   ### 5. Approve for implementation
+   ### 5. Recommend for human approval
 
    If the issue is clear and actionable (not a question, not a duplicate,
-   and contains enough detail to implement), add the `approved` label so
-   the implementer trigger picks it up:
+   and contains enough detail to implement), add the `ready-for-approval`
+   label to indicate a positive triage assessment:
 
    ```bash
-   gh issue edit $ISSUE_NUMBER --add-label "approved"
+   gh issue edit $ISSUE_NUMBER --add-label "ready-for-approval"
    ```
 
-   Only add the label if you are confident the issue is ready to be worked
-   on. If information is missing, ask clarifying questions in the comment
-   instead.
+   Only add the label if you are confident the issue is ready for a human
+   decision. Never add the `approved` label; a human adds it to authorize
+   implementation. If information is missing, ask clarifying questions in
+   the comment instead.

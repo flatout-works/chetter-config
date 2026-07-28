@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
 # Trigger: issue implementation
 #
-# When the approved label is added to an issue (by the triage agent), an
+# When a human adds the approved label to an issue after triage, an
 # agent reads the issue, plans the work, implements the solution, and
 # opens a PR.
 #
@@ -27,14 +27,14 @@ match_labels:
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-implementer
-provider_id: deepseek
-model_id: deepseek-v4-pro
+provider_id: synthetic
+model_id: hf:zai-org/GLM-5.2
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 14400
 prompt: |-
   You are implementing a solution for a GitHub issue that has been
-  approved for implementation after triage. You have access to the
+  approved by a human after triage. You have access to the
   repository and the `gh` CLI.
 
   ## Context

@@ -12,8 +12,8 @@ git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: task-improver
-provider_id: deepseek
-model_id: deepseek-v4-pro
+provider_id: synthetic
+model_id: hf:moonshotai/Kimi-K3
 timeout_sec: 3600
 skills:
   - chetter

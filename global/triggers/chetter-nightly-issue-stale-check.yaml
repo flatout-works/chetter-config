@@ -23,8 +23,8 @@ git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-stale-check
-provider_id: opencode
-model_id: deepseek-v4-flash-free
+provider_id: synthetic
+model_id: hf:moonshotai/Kimi-K3
 timeout_sec: 3600
 skills:
   - chetter

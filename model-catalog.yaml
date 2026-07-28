@@ -1,15 +1,15 @@
 # yaml-language-server: $schema=../chetter/schemas/model-catalog.schema.json
 version: 1
 default_provider: synthetic
-default_model: hf:moonshotai/Kimi-K2.7-Code
+default_model: hf:moonshotai/Kimi-K3
 
 defaults:
   opencode:
     provider: synthetic
-    model: hf:moonshotai/Kimi-K2.7-Code
+    model: hf:moonshotai/Kimi-K3
   pi:
-    provider: deepseek
-    model: deepseek-v4-pro
+    provider: synthetic
+    model: hf:zai-org/GLM-5.2
   claude-code:
     provider: anthropic
     model: claude-sonnet-4-5
@@ -18,9 +18,15 @@ providers:
   synthetic:
     name: Synthetic
     kind: openai_compatible
+    base_url: https://api.synthetic.new/openai/v1
+    api_key_env: SYNTHETIC_API_KEY
     models:
-      - id: hf:moonshotai/Kimi-K2.7-Code
+      - id: hf:moonshotai/Kimi-K3
       - id: hf:zai-org/GLM-5.2
+    harnesses:
+      pi:
+        api: openai-completions
+        auth_header: true
 
   opencode:
     name: OpenCode Zen
