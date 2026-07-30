@@ -9,8 +9,11 @@
 #   git_url      - repository URL to clone before working
 #   git_ref      - branch to work from (usually main)
 #   agent_image  - runner image (get from your Chetter admin or build your own)
-#   provider_id  - LLM provider (synthetic for GLM, or your configured provider)
-#   model_id     - model identifier (e.g. hf:zai-org/GLM-5.2)
+#   provider_id  - LLM provider (optional; omit to use the harness default
+#                  from the model catalog)
+#   model_id     - model identifier (optional; must be compatible with the
+#                  selected harness — e.g. synthetic models are wired for the
+#                  pi harness, while opencode uses the catalog default)
 #   timeout_sec  - adjust based on issue complexity (3600+ recommended)
 #   skills       - skill hints for the runner (optional)
 #
@@ -27,8 +30,9 @@ match_labels:
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-implementer
-provider_id: synthetic
-model_id: hf:zai-org/GLM-5.2
+# No provider_id/model_id pin: use the model catalog default for the opencode
+# harness. The previous hf:zai-org/GLM-5.2 pin is only wired for the pi
+# harness and caused repeated "stuck harness: no progress" task failures.
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 14400
