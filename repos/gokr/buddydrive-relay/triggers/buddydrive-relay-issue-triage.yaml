@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
+name: buddydrive-relay-issue-triage
+enabled: true
+trigger_type: issue
+repo: gokr/buddydrive-relay
+event: opened
+agent_image: ghcr.io/flatout-works/chetter-agent:minimal
+harness: opencode
+agent: issue-triage
+provider_id: synthetic
+model_id: hf:moonshotai/Kimi-K3
+timeout_sec: 3600
+prompt: |-
+  Triage the newly opened issue in $GITHUB_REPO.
+
+  Read it with:
+
+  ```bash
+  gh issue view "$ISSUE_NUMBER" --repo "$GITHUB_REPO" --json title,body,labels,assignees,comments
+  ```
+
+  Classify the issue, assess priority, and produce a concrete plan. Post a
+  structured comment using `chetter_issue_comment`. If the issue is clear and
+  actionable, add `ready-for-approval` with:
+
+  ```bash
+  gh issue edit "$ISSUE_NUMBER" --repo "$GITHUB_REPO" --add-label ready-for-approval
+  ```
+
+  Never add `approved`; that label requires human approval.
