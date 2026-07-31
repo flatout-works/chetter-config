@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
+name: buddydrive-relay-pr-review
+enabled: true
+trigger_type: pr_review
+repo: gokr/buddydrive-relay
+agent_image: ghcr.io/flatout-works/chetter-agent:nim
+harness: opencode
+agent: pr-reviewer
+provider_id: synthetic
+model_id: hf:moonshotai/Kimi-K3
+timeout_sec: 3600
+prompt: |-
+  Review this Nim pull request in $GITHUB_REPO.
+
+  Read the repository's AGENTS.md and the complete changed files. Check
+  correctness, security, error handling, concurrency, resource handling, and
+  tests. Run `nimble build` and relevant targeted Nim tests when practical.
+  Do not run `go test ./...` or assume that `make check` exists. Distinguish
+  baseline dependency failures from regressions introduced by the PR.
