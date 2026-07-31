@@ -11,8 +11,8 @@ defaults:
     provider: synthetic
     model: hf:zai-org/GLM-5.2
   claude-code:
-    provider: anthropic
-    model: claude-sonnet-4-5
+    provider: synthetic
+    model: hf:moonshotai/Kimi-K3
 
 providers:
   synthetic:
@@ -27,6 +27,9 @@ providers:
       pi:
         api: openai-completions
         auth_header: true
+      claude-code:
+        base_url: https://api.synthetic.new/anthropic
+        api: anthropic-messages
 
   opencode:
     name: OpenCode Zen
