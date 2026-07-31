@@ -1,14 +1,14 @@
 # yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
 name: next-feature-creator
 enabled: true
-cron_expr: "0 4 * * *"
+cron_expr: "30 0 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: feature-creator
-provider_id: synthetic
-model_id: hf:moonshotai/Kimi-K3
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 3600
 prompt: |-
   Propose and create ONE GitHub issue for the next most impactful item the project should work on.

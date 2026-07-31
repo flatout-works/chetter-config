@@ -17,14 +17,14 @@
 
 name: chetter-nightly-issue-stale-check
 enabled: true
-cron_expr: "0 6 * * *"
+cron_expr: "30 5 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-stale-check
-provider_id: synthetic
-model_id: hf:moonshotai/Kimi-K3
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 3600
 skills:
   - chetter
