@@ -4,7 +4,7 @@
 name: chetter-six-hour-approved-issue-implementer
 enabled: true
 trigger_type: cron
-cron_expr: "0 */6 * * *"
+cron_expr: "0 5,11,17,23 * * *"
 repo: flatout-works/chetter
 match_labels:
   - approved
@@ -13,8 +13,8 @@ git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: pi
 agent: issue-implementer
-provider_id: synthetic
-model_id: hf:zai-org/GLM-5.2
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 14400
 prompt: |-
   Implement exactly one approved GitHub issue in flatout-works/chetter.

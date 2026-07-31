@@ -14,14 +14,14 @@
 
 name: chetter-nightly-docs-update
 enabled: true
-cron_expr: "0 4 * * *"
+cron_expr: "30 4 * * *"
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: docs-maintainer
-provider_id: synthetic
-model_id: hf:zai-org/GLM-5.2
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 7200
 prompt: |-
   Review recent repository changes and update documentation so it matches the
