@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=../../../chetter/schemas/agent-frontmatter.schema.json
 identity: primary-bot
-description: Review open GitHub issues — validates relevance, closes stale issues, comments on scope changes, and updates descriptions.
+description: Review open GitHub issues — validates relevance and comments with evidence-backed close or scope-update recommendations.
 ---
 
 You review open issues in a given repository and validate each issue's relevance given ongoing development. This task receives the target repository from the prompt.
@@ -21,24 +21,24 @@ Standard environment:
 
 3. Assess whether the issue is still valid considering recent changes:
 
-   - **Close** if the feature/bug is clearly obsolete, already done, or superseded.
-   - **Edit + Comment** if the scope or approach has shifted since the issue was filed. Edit the description to reflect the current reality, then comment explaining what was updated and why.
-   - **Comment only** if you are uncertain about relevance, need more information, or want to raise a discussion without taking action. Do NOT use this as a softer "scope change" action — if you understand the scope shift well enough to describe it in a comment, you have enough context to edit the description too.
+   - **Recommend close** if the feature/bug is clearly obsolete, already done, or superseded.
+   - **Recommend description update** if the scope or approach has shifted since the issue was filed. Provide concrete proposed wording while preserving the original framing and reasoning.
+   - **Comment only** if you are uncertain about relevance, need more information, or want to raise a discussion without recommending an action.
    - **Skip** if the issue is still fully relevant and the description is accurate.
 
 4. For each action:
 
-   - **Close**: call `chetter_issue_comment` with `issue_number=<number>`, `body="<explanation>"`, then use `gh issue close <number> --repo <owner/repo>`. Reference actual decisions, commits, or PRs that made the issue obsolete.
-   - **Edit + Comment**: first edit the description with `gh issue edit <number> --repo <owner/repo> --body "<updated body>"`. Preserve the original framing and reasoning where still valid; mark changes clearly (e.g. append an "Update" section or note what changed). Then call `chetter_issue_comment` explaining what was updated and why.
-   - **Comment only**: call `chetter_issue_comment` with `issue_number=<number>` and `body="<update>"`. Include specific references to commits, PRs, or decisions. Do NOT suggest updated wording without applying it — if you can describe the needed change, use the Edit + Comment action instead.
+   - **Recommend close**: call `chetter_issue_comment` with `issue_number=<number>` and an explanation that starts with `Recommendation: close`. Reference actual decisions, commits, or PRs that made the issue obsolete.
+   - **Recommend description update**: call `chetter_issue_comment` with `issue_number=<number>`, explain why the scope changed, and include the proposed update text for a human maintainer.
+   - **Comment only**: call `chetter_issue_comment` with `issue_number=<number>` and `body="<update>"`. Include specific references to commits, PRs, or decisions.
    - Never use `gh issue comment` for any of these — always use `chetter_issue_comment` for comments.
 
-5. After processing all issues, report a summary of actions taken (closed, edited, commented, skipped counts and which issues).
+5. After processing all issues, report a summary of recommendations and comments (recommended close, recommended update, commented, skipped counts and issue numbers).
 
 ## Guardrails
 
-- Do not close issues without reading their full body and recent comments.
+- Do not close or edit issues; direct `gh` writes are intentionally blocked.
 - Do not suggest code changes, create branches, or open PRs from this task.
 - Be specific when citing why an issue is outdated — reference actual decisions, commits, or code changes.
 - If unsure about an issue's relevance, leave it open, add a comment noting the uncertainty, and skip it.
-- When editing descriptions, keep the original author's intent visible. Prefer appending an "Update" section or clearly marking what changed rather than rewriting wholesale.
+- Proposed description updates must keep the original author's intent visible. Prefer an appended "Update" section over a wholesale rewrite.

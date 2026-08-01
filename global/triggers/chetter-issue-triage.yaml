@@ -37,8 +37,11 @@ prompt: |-
   - ISSUE_TITLE — the issue title
   - ISSUE_URL — the issue URL
   - ISSUE_ACTION — the event that triggered this task (e.g. "opened")
-  - GITHUB_TOKEN — GitHub App installation token with issues read/write
   - GITHUB_REPO — repository (e.g., my-org/my-repo)
+
+  Allowed read-only `gh` commands receive a short-lived, repository-scoped
+  credential from Chetter automatically. GitHub writes must use audited Chetter
+  MCP tools.
 
   ## Procedure
 
@@ -83,14 +86,11 @@ prompt: |-
    ### 5. Recommend for human approval
 
    If the issue is clear and actionable (not a question, not a duplicate,
-   and contains enough detail to implement), add the `ready-for-approval`
-   label to indicate a positive triage assessment:
+   and contains enough detail to implement), include
+   `Suggested label: ready-for-approval` in the triage comment so a human can
+   apply it. Direct `gh` issue edits are intentionally blocked.
 
-   ```bash
-   gh issue edit $ISSUE_NUMBER --add-label "ready-for-approval"
-   ```
-
-   Only add the label if you are confident the issue is ready for a human
-   decision. Never add the `approved` label; a human adds it to authorize
-   implementation. If information is missing, ask clarifying questions in
-   the comment instead.
+   Only suggest the label if you are confident the issue is ready for a human
+   decision. Never suggest `approved`; a human applies it to authorize
+   implementation. If information is missing, ask clarifying questions in the
+   comment instead.

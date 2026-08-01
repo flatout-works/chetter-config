@@ -48,8 +48,11 @@ prompt: |-
   - ISSUE_TITLE — the issue title
   - ISSUE_URL — the issue URL
   - ISSUE_BODY — the issue body
-  - GITHUB_TOKEN — GitHub App installation token with issues/PRs read/write
   - GITHUB_REPO — repository (e.g., my-org/my-repo)
+
+  Git and allowed read-only `gh` commands receive short-lived,
+  repository-scoped credentials from Chetter automatically. GitHub writes must
+  use the audited Chetter MCP tools.
 
   ## Procedure
 

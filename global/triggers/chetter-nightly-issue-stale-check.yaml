@@ -2,8 +2,8 @@
 # Trigger: nightly issue stale check
 #
 # Reviews all open GitHub issues and validates they are still relevant
-# given ongoing development. Closes stale issues, updates descriptions
-# where scope has shifted, and comments where discussion is warranted.
+# given ongoing development. Comments with evidence-backed close or description
+# update recommendations for human maintainers.
 #
 # Customize before enabling:
 #   GITHUB_REPO - set your repo at the top of the prompt (owner/repo)
@@ -50,18 +50,19 @@ prompt: |-
      - Has the approach changed since the issue was filed?
      - Has the issue been implicitly resolved by other work?
   3. Take one of:
-     - **Close** if clearly obsolete, already done, or superseded. Call `chetter_issue_comment` to post the explanation, then `gh issue close <number> --repo $GITHUB_REPO`.
-     - **Edit description** if the scope shifted enough that the description should be updated. Use `gh issue edit <number> --repo $GITHUB_REPO --body "..."` and add a comment via `chetter_issue_comment` noting what changed.
-     - **Comment** if the scope shifted but you are not confident to edit directly. Call `chetter_issue_comment` with the update.
+     - **Recommend close** if clearly obsolete, already done, or superseded. Call `chetter_issue_comment` with evidence and start the comment with `Recommendation: close`.
+     - **Recommend description update** if the scope shifted. Call `chetter_issue_comment` with the evidence and proposed wording for a human maintainer.
+     - **Comment** if the scope may have shifted but you are not confident enough to recommend an action.
      - **Skip** if still fully relevant.
 
   ## Step 3: Report Summary
   Print a summary table of actions taken:
   ```
-  Closed:   #34 (obsolete approach)
-  Edited:   #58 (scope shifted)
-  Commented: #42 (scope concern)
-  Skipped:  #36, #40, #50 (still relevant)
+  Recommend close:  #34 (obsolete approach)
+  Recommend update: #58 (scope shifted)
+  Commented:        #42 (scope concern)
+  Skipped:          #36, #40, #50 (still relevant)
   ```
 
-  Do not merge, push, commit, or create any PRs. Do not modify any files in the repository.
+  Do not close or edit issues directly. Do not merge, push, commit, create PRs,
+  or modify files in the repository.

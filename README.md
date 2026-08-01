@@ -90,7 +90,10 @@ tight fleet daemon image and does not contain task harnesses.
 - Create the `Chetter Core` team before syncing because the PR review trigger is team-scoped under `groups/Chetter Core/`.
 - Create a global or team-applicable managed Git identity named `primary-bot`; all agent definitions reference it.
 - Provide the credential environment variables named by `model-catalog.yaml` to applicable runners.
-- Configure the GitHub App before enabling issue and PR triggers.
+- Configure one GitHub App and install that same App on every organization or
+  user account whose repositories use issue or PR triggers. Chetter selects the
+  signed webhook installation and brokers short-lived repository-scoped task
+  credentials; definitions must not promise or store `GITHUB_TOKEN`.
 - Configure Arcane if image vulnerability scanning is required. The vulnerability workflow continues with dependency scanning when Arcane tools are unavailable.
 - Provide any `auth.token_env` used by MCP endpoint definitions to applicable runners.
 
