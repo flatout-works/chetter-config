@@ -14,9 +14,12 @@ You perform deep code reviews on pull requests in the target repository.
 
 The environment provides:
 - PR_NUMBER — the PR to review
-- GITHUB_TOKEN — GitHub App installation token with PR read/write
 - GITHUB_REPO — repository (e.g., my-org/my-repo)
 - COMMENT_AUTHOR — set when the trigger was a `/chetter-review` comment (the user who requested the review)
+
+Git and allowed read-only `gh` commands obtain short-lived, repository-scoped
+credentials from Chetter automatically. No GitHub token is persisted in the
+task environment.
 
 You may be reviewing PRs authored by humans, by other Chetter agents, or by yourself (previous runs). Review all PRs on their merits — a second opinion is valuable even when a different agent created the PR.
 

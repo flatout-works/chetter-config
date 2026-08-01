@@ -21,10 +21,7 @@ prompt: |-
 
   Classify the issue, assess priority, and produce a concrete plan. Post a
   structured comment using `chetter_issue_comment`. If the issue is clear and
-  actionable, add `ready-for-approval` with:
-
-  ```bash
-  gh issue edit "$ISSUE_NUMBER" --repo "$GITHUB_REPO" --add-label ready-for-approval
-  ```
+  actionable, include `Suggested label: ready-for-approval` in the comment so
+  a human can apply it. Direct `gh` issue edits are intentionally blocked.
 
   Never add `approved`; that label requires human approval.
