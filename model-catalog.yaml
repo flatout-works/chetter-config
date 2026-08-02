@@ -8,11 +8,17 @@ defaults:
     provider: synthetic
     model: hf:moonshotai/Kimi-K3
   pi:
-    provider: synthetic
-    model: hf:zai-org/GLM-5.2
+    provider: deepseek
+    model: deepseek-v4-flash
   claude-code:
     provider: synthetic
     model: hf:moonshotai/Kimi-K3
+  codewhale:
+    provider: deepseek
+    model: deepseek-v4-flash
+  codex:
+    provider: deepseek
+    model: deepseek-v4-flash
 
 providers:
   synthetic:
