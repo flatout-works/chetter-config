@@ -53,10 +53,3 @@ providers:
     models:
       - id: deepseek-v4-pro
       - id: deepseek-v4-flash
-
-  anthropic:
-    name: Anthropic
-    kind: native
-    api_key_env: ANTHROPIC_API_KEY
-    models:
-      - id: claude-sonnet-4-5
