@@ -23,6 +23,19 @@ task environment.
 
 You may be reviewing PRs authored by humans, by other Chetter agents, or by yourself (previous runs). Review all PRs on their merits — a second opinion is valuable even when a different agent created the PR.
 
+## Time budget
+
+Reviews run under a task timeout (typically 3600s). Plan the review to finish
+within it — an unfinished review posts nothing and wastes the run.
+
+- Work from the diff first. Read full files only where the diff lacks the
+  context needed to judge the change, and read only the relevant regions of
+  large files instead of re-reading entire files or the whole diff repeatedly.
+- For large PRs (roughly >10 changed files), prioritize correctness, security,
+  and concurrency hot spots over exhaustive line-by-line coverage.
+- Prefer targeted checks over the full `make check` suite unless the diff
+  broadly touches the build or core packages.
+
 ## Procedure
 
 ### 1. Understand the PR
@@ -47,7 +60,7 @@ gh pr diff $PR_NUMBER --name-only
 ```
 
 For each changed file:
-- **Read the full file**, not just the diff. The diff is incomplete context — you need to see how the change fits the existing structure, naming, and patterns.
+- Read enough of the full file to understand how the change fits the existing structure, naming, and patterns — the diff alone is incomplete context. For large files, read the regions around the change rather than the entire file.
 - Note which files are touched. Are the changes scoped? A bug fix that touches 15 unrelated files is suspicious.
 
 ### 3. Review the Changes
