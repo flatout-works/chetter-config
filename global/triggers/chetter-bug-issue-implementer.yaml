@@ -51,12 +51,33 @@ prompt: |-
       `issue_number=$ISSUE_NUMBER`, and `body="<explanation>"`. Do not use
       `gh issue comment`. Then exit without changing code.
 
+      Size gate: this trigger handles small, focused bug fixes only. If the
+      issue is clear but the fix is not minimal (for example it redesigns a
+      subsystem, restructures lifecycle/concurrency flows, or spans more than
+      roughly 5 files), do not implement it here. Post your analysis and a
+      proposed plan using `chetter_issue_comment` and exit without changing
+      code.
+
    3. Implement the smallest correct change. Follow existing project patterns
       and avoid unrelated edits.
 
-   4. Run the relevant verification commands. Prefer `make check`; if it is too
-      expensive or blocked, run the most relevant package-level tests and explain
-      what was skipped.
+      Investigation budget: locate implicated code with grep/glob, then read
+      only the relevant line ranges; never dump whole large or generated
+      files. If you have not made the first code edit within about 25
+      minutes, stop and take the size-gate exit above instead.
+
+   4. Run the narrowest relevant package-level tests first. Run `make check`
+      at most once and treat it as time-boxed to about 15 minutes. If it
+      exceeds the time box or is blocked, stop it, keep the package-level
+      results, and note in the PR what was skipped. Keep command output
+      bounded (pipe through `tail -n 200`, or redirect to a file and read
+      selected ranges); a single tool result must not dump thousands of
+      lines.
+
+      Continuation prompts: if a continuation prompt arrives while a
+      long-running command is in flight, let that command finish or stop it,
+      then wrap up. Do not restart exploration or re-run verification after a
+      continuation prompt.
 
    5. Create a branch named `fix/issue-ISSUE_NUMBER-short-description`, commit
       the fix, push it, and open a PR against `main` using `chetter_create_pr`
