@@ -36,6 +36,10 @@ agent: issue-implementer
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 14400
+# Resumable (gVisor): a stuck or failed attempt keeps its container, so the
+# session can be resumed with the workspace intact within ttl_hours.
+session_mode: resumable
+ttl_hours: 24
 prompt: |-
   You are implementing a solution for a GitHub issue that has been
   approved by a human after triage. You have access to the

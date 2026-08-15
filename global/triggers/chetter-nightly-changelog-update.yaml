@@ -23,6 +23,10 @@ agent: changelog-maintainer
 provider_id: deepseek
 model_id: deepseek-v4-flash
 timeout_sec: 3600
+# Resumable (gVisor): a stuck or failed attempt keeps its container, so the
+# session can be resumed with the workspace intact within ttl_hours.
+session_mode: resumable
+ttl_hours: 24
 prompt: |-
   Maintain the repository's root `CHANGELOG.md` from recent changes.
 

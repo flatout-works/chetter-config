@@ -14,3 +14,7 @@ git_ref: master
 provider_id: synthetic
 model_id: hf:moonshotai/Kimi-K3
 timeout_sec: 14400
+# Resumable (gVisor): a stuck or failed attempt keeps its container, so the
+# session can be resumed with the workspace intact within ttl_hours.
+session_mode: resumable
+ttl_hours: 24
