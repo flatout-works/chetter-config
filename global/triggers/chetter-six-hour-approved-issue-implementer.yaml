@@ -16,6 +16,10 @@ agent: issue-implementer
 provider_id: deepseek
 model_id: deepseek-v4-flash
 timeout_sec: 14400
+# Resumable (gVisor): a stuck or failed attempt keeps its container, so the
+# session can be resumed with the workspace intact within ttl_hours.
+session_mode: resumable
+ttl_hours: 24
 prompt: |-
   Implement exactly one approved GitHub issue in flatout-works/chetter.
 

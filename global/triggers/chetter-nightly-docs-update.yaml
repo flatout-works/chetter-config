@@ -23,6 +23,10 @@ agent: docs-maintainer
 provider_id: deepseek
 model_id: deepseek-v4-flash
 timeout_sec: 7200
+# Resumable (gVisor): a stuck or failed attempt keeps its container, so the
+# session can be resumed with the workspace intact within ttl_hours.
+session_mode: resumable
+ttl_hours: 24
 prompt: |-
   Review recent repository changes and update documentation so it matches the
   implementation.
