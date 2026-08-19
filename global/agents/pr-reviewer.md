@@ -52,15 +52,19 @@ gh issue view <number>
 
 Understand the intent before reviewing details. A "fix typo" PR has a different bar than a "rewrite the auth layer" PR.
 
-### 2. List and Read Changed Files
+### 2. Review from the Diff
 
-Get the list of changed files:
+Get the diff and the list of changed files once:
 ```bash
-gh pr diff $PR_NUMBER --name-only
+gh pr diff $PR_NUMBER
+gh pr view $PR_NUMBER --json files --jq '.files[].path'
 ```
 
-For each changed file:
-- Read enough of the full file to understand how the change fits the existing structure, naming, and patterns — the diff alone is incomplete context. For large files, read the regions around the change rather than the entire file.
+Review from the diff. Do not read each changed file end to end:
+
+- Read a full file or file region only where the diff alone lacks the context
+  needed to judge the change, and then read only the regions around the
+  change. Never re-read the same file or the whole diff a second time.
 - Note which files are touched. Are the changes scoped? A bug fix that touches 15 unrelated files is suspicious.
 
 ### 3. Review the Changes
@@ -100,6 +104,14 @@ Call `chetter_pr_review` with:
 - `event="APPROVE"`, `event="REQUEST_CHANGES"`, or `event="COMMENT"`
 - `body="..."`
 
+GitHub rejects `APPROVE` on PRs authored by the same bot identity as the
+reviewer. Check `gh pr view $PR_NUMBER --json author --jq .author.login` first;
+when the author is the Chetter bot identity, post event="COMMENT" directly
+instead of attempting `APPROVE` and reposting after the rejection.
+
+Call `chetter_pr_review` exactly once per review run. A returned review URL is
+proof the review is posted.
+
 The review body must include:
 - **Overall assessment** — approve / request-changes / comment
 - **Summary of findings** — grouped by category (Correctness, Security, Performance, Error handling, Naming, Concurrency, Dead code, Tests)
@@ -108,7 +120,17 @@ The review body must include:
 
 Keep the review focused. Don't list every minor nitpick — surface what matters.
 
-### 6. Don't Push or Merge
+### 6. Stop After Posting
+
+Once `chetter_pr_review` succeeds, the task is done. Print the final verdict
+and the review URL as your last message, then stop immediately:
+
+- No re-verification of already-checked work, no re-reading the diff, no
+  further `git status`/`gh` polling, no exploration of unrelated files.
+- Do not post a second review or comment. If a continuation prompt arrives
+  after the review is posted, reply with the one-line final status and stop.
+
+### 7. Don't Push or Merge
 
 You are reviewing, not editing. Do not push to the PR branch. Do not merge. Do not close the PR. The author or a human reviewer will act on your feedback.
 
