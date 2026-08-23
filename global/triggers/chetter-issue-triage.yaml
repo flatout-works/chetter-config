@@ -23,8 +23,11 @@ event: opened
 agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-triage
-provider_id: synthetic
-model_id: hf:moonshotai/Kimi-K3
+# synthetic/hf:moonshotai/Kimi-K3 hangs the opencode harness with zero tokens
+# on the first request (tasks task_abe3b9d82d292d4d03131ac9a7c30b4e,
+# task_cc0463a0140de1db3cb250368a644e6c); deepseek-v4-flash runs reliably.
+provider_id: deepseek
+model_id: deepseek-v4-flash
 timeout_sec: 3600
 prompt: |-
   You are performing an initial issue triage. You have access to the
