@@ -26,9 +26,16 @@ providers:
     kind: openai_compatible
     base_url: https://api.synthetic.new/openai/v1
     api_key_env: SYNTHETIC_API_KEY
+    # All Synthetic Always-On models (included in every subscription):
+    # https://dev.synthetic.new/docs/api/models
     models:
-      - id: hf:moonshotai/Kimi-K3
       - id: hf:zai-org/GLM-5.2
+      - id: hf:zai-org/GLM-4.7-Flash
+      - id: hf:moonshotai/Kimi-K3
+      - id: hf:Qwen/Qwen3.6-27B
+      - id: hf:Qwen/Qwen3.8-27B
+      - id: hf:openai/gpt-oss-120b
+      - id: hf:nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4
     harnesses:
       pi:
         api: openai-completions
@@ -36,6 +43,10 @@ providers:
       claude-code:
         base_url: https://api.synthetic.new/anthropic
         api: anthropic-messages
+      # Synthetic has no /responses endpoint; route Codex through chat
+      # completions instead of its default responses wire API.
+      codex:
+        api: openai-completions
 
   opencode:
     name: OpenCode Zen
