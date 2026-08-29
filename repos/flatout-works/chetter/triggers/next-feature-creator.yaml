@@ -46,4 +46,5 @@ prompt: |-
   ### Guardrails
   - Do NOT grep/scrape the codebase for TODOs/FIXMEs — trust issues, CHANGELOG, docs, and commit history as the signal.
   - If all good candidates are already open issues, exit cleanly without creating a duplicate.
+  - Before creating the issue, verify the candidate is not ALREADY implemented: grep `docs/`, `CHANGELOG.md`, and the last 30 days of commit subjects for the candidate's feature name and close synonyms. If any source indicates the capability is already shipped (not merely planned), discard the candidate and evaluate the next one. Filing an issue for completed work wastes a review cycle.
   - Stop analysis after step 2 and make a decision. Do not iterate.
