@@ -1,18 +1,18 @@
 # yaml-language-server: $schema=../chetter/schemas/model-catalog.schema.json
 version: 1
 default_provider: synthetic
-default_model: hf:moonshotai/Kimi-K3
+default_model: hf:zai-org/GLM-5.3-Flash
 
 defaults:
   opencode:
     provider: synthetic
-    model: hf:moonshotai/Kimi-K3
+    model: hf:zai-org/GLM-5.3-Flash
   pi:
     provider: deepseek
     model: deepseek-v4-flash
   claude-code:
     provider: synthetic
-    model: hf:moonshotai/Kimi-K3
+    model: hf:zai-org/GLM-5.3-Flash
   codewhale:
     provider: deepseek
     model: deepseek-v4-flash
@@ -30,8 +30,8 @@ providers:
     # https://dev.synthetic.new/docs/api/models
     models:
       - id: hf:zai-org/GLM-5.2
+      - id: hf:zai-org/GLM-5.3-Flash
       - id: hf:zai-org/GLM-4.7-Flash
-      - id: hf:moonshotai/Kimi-K3
       - id: hf:Qwen/Qwen3.6-27B
       - id: hf:Qwen/Qwen3.8-27B
       - id: hf:openai/gpt-oss-120b

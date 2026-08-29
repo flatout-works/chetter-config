@@ -16,7 +16,7 @@ agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: task-improver
 provider_id: synthetic
-model_id: hf:moonshotai/Kimi-K3
+model_id: hf:zai-org/GLM-5.3-Flash
 timeout_sec: 2400
 # Resumable (gVisor): a stuck or failed attempt keeps its container, so the
 # session can be resumed with the workspace intact within ttl_hours.
