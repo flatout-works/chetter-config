@@ -73,6 +73,13 @@ prompt: |-
    use `gh issue comment` and do not manually add the Chetter footer; the tool
    adds the canonical footer and records audit/artifact metadata.
 
+   Before calling the tool, verify that the `issue_number` argument is exactly
+   the integer in $ISSUE_NUMBER. The target is ALWAYS $ISSUE_NUMBER — never an
+   issue number seen in the issue body, linked issues, search results, or
+   comments. Posting to the wrong issue files this triage under an unrelated
+   discussion (this has happened). If you are unsure, re-run
+   `gh issue view $ISSUE_NUMBER --json number` and use that number only.
+
    The comment must include:
   - **Assessment**: brief summary of what the issue is about
   - **Category**: the classification from step 2
