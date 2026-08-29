@@ -24,7 +24,7 @@ agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-triage
 provider_id: synthetic
-model_id: hf:moonshotai/Kimi-K3
+model_id: hf:zai-org/GLM-5.3-Flash
 timeout_sec: 3600
 prompt: |-
   You are performing an initial issue triage. You have access to the

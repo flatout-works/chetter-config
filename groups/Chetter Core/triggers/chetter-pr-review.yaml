@@ -15,7 +15,7 @@ agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: pr-reviewer
 provider_id: synthetic
-model_id: hf:moonshotai/Kimi-K3
+model_id: hf:zai-org/GLM-5.3-Flash
 timeout_sec: 3600
 # Override the built-in review template: its "read the full file for each
 # changed file" plus unconditional full-suite verification caused broad
