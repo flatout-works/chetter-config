@@ -125,3 +125,13 @@ Referenced agents, skills, MCP endpoints, teams, and managed Git identities must
 ## Example repo
 
 See `examples/config-repo/` in the main Chetter repository for a starter template.
+
+## Configured repositories
+
+| Repository | Scope | Automation |
+|---|---|---|
+| `flatout-works/chetter` | global + `repos/` + `groups/Chetter Core/` | issue triage, implementers (approved / bug / six-hour), PR review, nightlies (changelog, docs, website, stale check, vulnerability scan), feature creator, weekly task improvers |
+| `flatout-works/chetter-config` | `repos/` | PR review |
+| `gokr/buddydrive` | `repos/` | issue triage, implementer, PR review, nightly changelog |
+| `gokr/buddydrive-relay` | `repos/` | issue triage, implementer, PR review |
+| `gokr/niffler` | `repos/` | issue triage, implementers (approved / bug / six-hour), PR review, nightlies (changelog, docs, website, stale check), feature creator |
