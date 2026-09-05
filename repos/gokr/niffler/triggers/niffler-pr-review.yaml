@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
+# Trigger: PR review for Niffler
+#
+# Reviews eligible pull-request lifecycle events in gokr/niffler.
+
+name: niffler-pr-review
+enabled: true
+trigger_type: pr_review
+repo: gokr/niffler
+git_url: https://github.com/gokr/niffler.git
+git_ref: main
+agent_image: ghcr.io/flatout-works/chetter-agent:nim
+harness: opencode
+agent: pr-reviewer
+provider_id: synthetic
+model_id: hf:zai-org/GLM-5.3-Flash
+timeout_sec: 3600
+# Bounded review procedure: full-file reads of every changed file and
+# unconditional full-suite verification caused broad exploration and high
+# token use on large or docs-only PRs.
+prompt: |-
+  Review pull request $PR_NUMBER in $GITHUB_REPO. Finish within the task
+  timeout; an unfinished review posts nothing and wastes the run.
+
+  ## Bounded procedure
+
+  1. Run `gh pr view $PR_NUMBER --json title,body,baseRefName,headRefName,files,commits`
+     and `gh pr diff $PR_NUMBER` once. Review from the diff.
+  2. Read full files only where the diff lacks context, and then only the
+     regions around the change. Never read every changed file end to end.
+  3. If the PR is documentation-only or a mechanical rename/move across many
+     files, do not review files one by one: spot-check a few representative
+     files and verify with a build instead.
+  4. Verification: skip code checks entirely for docs-only changes. Otherwise
+     run `make build` plus the narrowest relevant `make test-<component>`
+     target for the touched components; run the full `make test` only when the
+     diff broadly touches the bus or SDK. Do not run `make check` — it does
+     not exist in this repository.
+  5. Post exactly one review with the `chetter_pr_review` MCP tool
+     (task_id=$CHETTER_TASK_ID, repo=$GITHUB_REPO, pr_number=$PR_NUMBER).
+     After it is posted, stop: no re-verification, no further polling.
+
+  Assess correctness, security, error handling, concurrency, bus-contract
+  (JSON envelopes over NATS), and tests. For Nim changes also check the style
+  guidelines in `AGENTS.md` (camelCase, `fmt("...")` as a proc call, no
+  asyncdispatch). Be specific with file:line citations; skip nitpicks that do
+  not matter.
