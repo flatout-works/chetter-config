@@ -71,7 +71,7 @@ the language/toolchain packages you need.
 | `python` | Python 3, pip, venv, ruff, mypy, pytest, black, httpx |
 | `node` | Node 22, pnpm, TypeScript, ts-node, eslint, prettier |
 | `rust` | rustup, cargo, clippy, rustfmt, cargo-audit, build-essential, libssl |
-| `nim` | Nim 2.2.8, Nimble, Testament, GCC/G++, Clang/libclang, GTK4, SQLite, libsodium, LZ4, MariaDB client headers, OpenSSL |
+| `nim` | Nim 2.2.8, Nimble, Testament, Go 1.26.4, GCC/G++, Clang/libclang, GTK4, SQLite, libsodium, LZ4, MariaDB client headers, OpenSSL |
 | `minimal` | Base harnesses only — no language toolchain |
 | `java-spring` | JDK 21, Maven, Gradle, Liquibase, PostgreSQL client |
 
