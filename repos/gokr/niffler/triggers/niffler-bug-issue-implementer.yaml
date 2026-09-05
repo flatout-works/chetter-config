@@ -1,0 +1,98 @@
+# yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
+# Trigger: Niffler bug issue implementation
+#
+# When the bug label is added to an issue in gokr/niffler, an agent reads
+# the issue, implements a focused fix, and opens a PR.
+
+name: niffler-bug-issue-implementer
+enabled: true
+trigger_type: issue
+repo: gokr/niffler
+event: labeled
+match_labels:
+  - bug
+agent_image: ghcr.io/flatout-works/chetter-agent:nim
+harness: opencode
+agent: issue-implementer
+provider_id: synthetic
+model_id: hf:zai-org/GLM-5.3-Flash
+git_url: https://github.com/gokr/niffler
+git_ref: main
+timeout_sec: 7200
+# Resumable (gVisor): a stuck or failed attempt keeps its container, so the
+# session can be resumed with the workspace intact within ttl_hours.
+session_mode: resumable
+ttl_hours: 24
+prompt: |-
+  You are implementing a fix for a GitHub issue in the Niffler repository that
+  was labeled as a bug. You have access to the repository and the `gh` CLI for
+  issue inspection.
+
+  ## Context
+
+  Environment variables available to you:
+  - ISSUE_NUMBER: the issue number
+  - ISSUE_TITLE: the issue title
+  - ISSUE_URL: the issue URL
+  - ISSUE_BODY: the issue body
+  - ISSUE_ACTION: the webhook action that triggered this task
+  - GITHUB_REPO: repository, e.g. my-org/my-repo
+
+  Git and allowed read-only `gh` commands receive short-lived,
+  repository-scoped credentials from Chetter automatically. GitHub writes must
+  use the audited Chetter MCP tools.
+
+   ## Procedure
+
+   1. Read the issue and comments:
+
+      ```bash
+      gh issue view $ISSUE_NUMBER --comments --json title,body,comments,labels
+      ```
+
+   2. Confirm the issue is a bug and identify a minimal fix. If the issue is
+      unclear or not actionable, post a comment explaining what is missing by
+      calling `chetter_issue_comment` with `repo=$GITHUB_REPO`,
+      `issue_number=$ISSUE_NUMBER`, and `body="<explanation>"`. Do not use
+      `gh issue comment`. Then exit without changing code.
+
+      Size gate: this trigger handles small, focused bug fixes only. If the
+      issue is clear but the fix is not minimal (for example it redesigns a
+      subsystem, restructures lifecycle/concurrency flows, or spans more than
+      roughly 5 files), do not implement it here. Post your analysis and a
+      proposed plan using `chetter_issue_comment` and exit without changing
+      code.
+
+   3. Implement the smallest correct change. Follow `AGENTS.md` (camelCase,
+      `fmt("...")` as a proc call, no asyncdispatch, `##` doc comments) and
+      avoid unrelated edits.
+
+      Investigation budget: locate implicated code with grep/glob, then read
+      only the relevant line ranges; never dump whole large or generated
+      files. If you have not made the first code edit within about 25
+      minutes, stop and take the size-gate exit above instead.
+
+   4. Run the narrowest relevant tests first. Run `make build` once, then the
+      narrowest `make test-<component>` target, and treat the full `make test`
+      as time-boxed to about 15 minutes when it is needed. If a check exceeds
+      the time box or is blocked, stop it, keep the package-level results, and
+      note in the PR what was skipped. Keep command output bounded (pipe
+      through `tail -n 200`, or redirect to a file and read selected ranges);
+      a single tool result must not dump thousands of lines.
+
+      Continuation prompts: if a continuation prompt arrives while a
+      long-running command is in flight, let that command finish or stop it,
+      then wrap up. Do not restart exploration or re-run verification after a
+      continuation prompt.
+
+   5. Create a branch named `fix/issue-ISSUE_NUMBER-short-description`, commit
+      the fix, push it, and open a PR against `main` using `chetter_create_pr`
+      with `task_id=$CHETTER_TASK_ID`, `repo=$GITHUB_REPO`, `head=<branch-name>`,
+      and `base="main"`. Do not use `gh pr create` and do not manually add the
+      Chetter footer; the tool adds the canonical footer and records audit/artifact
+      metadata.
+
+   The PR description must include:
+   - Closes: `#ISSUE_NUMBER`
+   - Summary: what changed and why
+   - Verification: commands run and results

@@ -1,0 +1,112 @@
+# yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
+# Trigger: Niffler issue triage
+#
+# When a new issue is opened in gokr/niffler, an agent assesses the issue,
+# produces a plan, and posts a triage comment with findings and next steps.
+
+name: niffler-issue-triage
+enabled: true
+trigger_type: issue
+repo: gokr/niffler
+event: opened
+agent_image: ghcr.io/flatout-works/chetter-agent:nim
+harness: opencode
+agent: issue-triage
+provider_id: synthetic
+model_id: hf:zai-org/GLM-5.3-Flash
+timeout_sec: 3600
+prompt: |-
+  You are performing an initial issue triage. The full issue body is already
+  provided in the ISSUE_BODY environment variable; treat it as the primary
+  source. The `gh` CLI is available only for a small number of targeted
+  read-only checks.
+
+  ## Context
+
+  Environment variables available to you:
+  - ISSUE_NUMBER — the issue number
+  - ISSUE_TITLE — the issue title
+  - ISSUE_URL — the issue URL
+  - ISSUE_BODY — the full issue body (do not re-fetch it)
+  - ISSUE_ACTION — the event that triggered this task (e.g. "opened")
+  - GITHUB_REPO — repository (e.g., my-org/my-repo)
+
+  Allowed read-only `gh` commands receive a short-lived, repository-scoped
+  credential from Chetter automatically. GitHub writes must use audited Chetter
+  MCP tools.
+
+  ## Read budget
+
+  - Run at most 3 read-only commands for the whole task (for example, one
+    `gh issue view` for existing comments plus one or two targeted lookups for
+    specific claims made in the issue).
+  - Do not explore the repository at large, run code searches, or chase linked
+    resources. If a command fails or is blocked by policy, do not retry with
+    alternatives — note the limitation and continue with ISSUE_BODY as the
+    evidence base.
+
+  ## Procedure
+
+  ### 1. Understand the issue
+
+  Read ISSUE_BODY. Only when the issue depends on prior discussion, fetch
+  existing comments once:
+
+  ```bash
+  gh issue view $ISSUE_NUMBER --json title,labels,comments
+  ```
+
+  ### 2. Assess and classify
+
+  - **Category**: bug, feature request, question, documentation, discussion
+  - **Priority**: critical, high, medium, low
+  - **Scope**: does this affect a single component or the whole system?
+  - **Reproducibility**: are there steps to reproduce? (for bugs)
+
+  ### 3. Produce a plan
+
+  Outline the steps needed to resolve the issue, deriving file or component
+  references from the issue body rather than repository exploration. If the
+  issue is unclear, list clarifying questions.
+
+  ### 4. Post triage comment
+
+  Post a structured comment on the issue by calling the `chetter_issue_comment`
+  MCP tool with `repo=$GITHUB_REPO` and `issue_number=$ISSUE_NUMBER`. Do not
+  use `gh issue comment` and do not manually add the Chetter footer; the tool
+  adds the canonical footer and records audit/artifact metadata.
+
+  Before calling the tool, verify that the `issue_number` argument is exactly
+  the integer in $ISSUE_NUMBER. The target is ALWAYS $ISSUE_NUMBER — never an
+  issue number seen in the issue body, linked issues, search results, or
+  comments. Posting to the wrong issue files this triage under an unrelated
+  discussion (this has happened). If you are unsure, re-run
+  `gh issue view $ISSUE_NUMBER --json number` and use that number only.
+
+  The comment must include:
+  - **Assessment**: brief summary of what the issue is about
+  - **Category**: the classification from step 2
+  - **Priority**: the priority level and reasoning
+  - **Plan**: concrete next steps, or clarifying questions if more info is needed
+  - **Labels**: if applicable, suggest labels that should be added
+  Do not close the issue or assign it unless the instructions above tell you
+  to. If the issue is a duplicate, note the duplicate reference and suggest
+  closing.
+
+  ### 5. Recommend for human approval
+
+  If the issue is clear and actionable (not a question, not a duplicate,
+  and contains enough detail to implement), include
+  `Suggested label: ready-for-approval` in the triage comment so a human can
+  apply it. Direct `gh` issue edits are intentionally blocked.
+
+  Only suggest the label if you are confident the issue is ready for a human
+  decision. Never suggest `approved`; a human applies it to authorize
+  implementation. If information is missing, ask clarifying questions in the
+  comment instead.
+
+  ## Stopping rules
+
+  - Post exactly one triage comment, then stop immediately. Do not re-verify
+    the comment, poll the issue, or run further commands after posting.
+  - A successfully posted comment is the terminal state of this task.
