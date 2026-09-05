@@ -12,10 +12,10 @@ event: labeled
 match_labels:
   - bug
 agent_image: ghcr.io/flatout-works/chetter-agent:nim
-harness: opencode
+harness: pi
 agent: issue-implementer
-provider_id: synthetic
-model_id: hf:zai-org/GLM-5.3-Flash
+provider_id: deepseek
+model_id: deepseek-v4-flash
 git_url: https://github.com/gokr/niffler
 git_ref: main
 timeout_sec: 7200

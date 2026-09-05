@@ -12,7 +12,7 @@ event: labeled
 match_labels:
   - approved
 agent_image: ghcr.io/flatout-works/chetter-agent:nim
-harness: opencode
+harness: pi
 agent: issue-implementer
 # No provider_id/model_id pin: use the model catalog default for the opencode
 # harness. Pins that are only wired for another harness have caused repeated

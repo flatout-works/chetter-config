@@ -4,7 +4,7 @@ enabled: true
 trigger_type: pr_review
 repo: gokr/buddydrive
 agent_image: ghcr.io/flatout-works/chetter-agent:nim
-harness: opencode
+harness: claude-code
 agent: pr-reviewer
 provider_id: synthetic
 model_id: hf:zai-org/GLM-5.3-Flash

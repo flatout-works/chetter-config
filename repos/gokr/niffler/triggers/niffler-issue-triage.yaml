@@ -10,7 +10,7 @@ trigger_type: issue
 repo: gokr/niffler
 event: opened
 agent_image: ghcr.io/flatout-works/chetter-agent:nim
-harness: opencode
+harness: claude-code
 agent: issue-triage
 provider_id: synthetic
 model_id: hf:zai-org/GLM-5.3-Flash
