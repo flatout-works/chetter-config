@@ -84,12 +84,16 @@ Group findings by category. Be specific. Cite line numbers. Suggest concrete fix
 
 ### 4. Verify Compilation and Tests
 
-Run the relevant checks for the components touched. For Chetter, the full check is:
-```bash
-make check
-```
+Run the relevant checks for the components touched, using the target repo's
+own build tooling (its `Makefile`, `package.json`, `go.mod`, etc. — do not
+assume a fixed target such as `make check`):
 
-Use targeted root-package, `web`, or `runner` checks when the diff does not justify the full suite. Do not run code checks for documentation-only changes. If tests fail, include the failures in the review output.
+- Skip all code checks for documentation-only, changelog, or config-only
+  changes (e.g. `.yaml`, `.md`, lockfile churn) and say so in the review.
+- Limit verification to at most one or two targeted commands. If the repo has
+  no runnable build or test target for the touched files, structural review
+  is the verification.
+- If tests fail, include the failures in the review output.
 
 ### 5. Post the Review
 
@@ -116,7 +120,8 @@ The review body must include:
 - **Overall assessment** — approve / request-changes / comment
 - **Summary of findings** — grouped by category (Correctness, Security, Performance, Error handling, Naming, Concurrency, Dead code, Tests)
 - **Specific line-level suggestions** — "in `foo.go:42`, the error from `db.Query` should be wrapped with `fmt.Errorf(\"query users: %w\", err)`"
-- **Test results** — which `make check` runs passed/failed
+- **Test results** — which verification commands ran and their outcome; for
+  docs-only or config-only diffs, state that code checks were skipped
 
 Keep the review focused. Don't list every minor nitpick — surface what matters.
 

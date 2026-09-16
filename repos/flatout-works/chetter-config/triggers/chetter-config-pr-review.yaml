@@ -57,9 +57,15 @@ prompt: |-
      validate changed files against `trigger.schema.json` /
      `agent-frontmatter.schema.json` / `model-catalog.schema.json` with
      python3+jsonschema when available.
-  5. Post exactly one review with the `chetter_pr_review` MCP tool
-     (task_id=$CHETTER_TASK_ID, repo=$GITHUB_REPO, pr_number=$PR_NUMBER).
-     After it is posted, stop: no re-verification, no further polling.
+   5. Post exactly one review with the `chetter_pr_review` MCP tool
+      (task_id=$CHETTER_TASK_ID, repo=$GITHUB_REPO, pr_number=$PR_NUMBER).
+      After it is posted, stop: no re-verification, no further polling.
 
-  Assess correctness and safety for the instance that syncs this repo. Be
-  specific with file:line citations; skip nitpicks that do not matter.
+   A generic `## Procedure` template is appended to this prompt after these
+   rules. Where the two conflict (e.g. "for each changed file, read the full
+   file"), this bounded procedure and the `pr-reviewer` agent rules win. Do
+   not run `make check` and do not include test results for definition-only
+   PRs; verify changed YAML and frontmatter structurally instead.
+
+   Assess correctness and safety for the instance that syncs this repo. Be
+   specific with file:line citations; skip nitpicks that do not matter.
