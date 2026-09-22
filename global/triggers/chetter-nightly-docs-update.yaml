@@ -37,9 +37,17 @@ prompt: |-
 
       git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
 
-  Read the project overview and documentation sources that exist in this
-  repository, such as `README.md`, `docs/`, `AGENTS.md`, `CONTRIBUTING.md`, or
-  equivalent files.
+  Scope: only the commits in this window on the checked-out branch. Do not
+  audit open PRs, closed PRs, issues, or older history; do not re-review work
+  from previous nightly runs. If the window has no non-merge commits, report
+  that and exit without further investigation.
+
+  Bounded review (complete within 15 minutes):
+  - Read only doc files touched by the reviewed commits, plus one targeted
+    grep sweep across `docs/` and `README.md` for stale claims about those
+    changes. Do not read every doc file end to end.
+  - Edit at most 4 doc files per run. Prefer the single most accurate minimal
+    fix per gap; if a gap is cosmetic, skip it.
 
   Update docs that are outdated, incomplete, or inaccurate. Keep the existing
   structure, tone, and formatting. Make the smallest accurate changes. Do not
@@ -54,3 +62,17 @@ prompt: |-
 
   If no documentation changes are needed, report that and exit without a PR.
   Do not push directly to `main`.
+
+  ## Stopping rules
+
+  This task has exactly two terminal states: PR created, or no documentation
+  changes needed. When you reach one:
+  1. Print the final summary (PR URL or exit reason) as your last message.
+  2. Stop immediately. Make no further tool calls. Do not re-verify completed
+     work: no repeated `git status`, no re-checking the PR, no re-grepping
+     docs already swept.
+  3. Call `chetter_create_pr` at most once. A returned PR URL is proof the PR
+     exists.
+  4. If a continuation prompt arrives after a terminal state, reply with a
+     one-line final status and stop. Do not reopen the investigation or
+     review open PRs.
