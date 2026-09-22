@@ -32,17 +32,32 @@ prompt: |-
 
   GITHUB_REPO=flatout-works/chetter
 
-  Review the last 24 hours of commit history:
+  Establish the changelog watermark before reviewing commits. The watermark is
+  the most recent commit on the checked-out branch that touched the root
+  `CHANGELOG.md`:
 
-      git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
+      changelog_touch=$(git log -1 --format=%H -- CHANGELOG.md)
 
-  Inspect the actual changes, not only commit subjects. Use `git show --stat`,
-  `git show --name-only`, and targeted diffs as needed.
+  Review **every non-merge commit after that watermark**, oldest first — do not
+  use a fixed `--since`/24-hour window. A fixed window loses history whenever a
+  changelog PR is delayed, conflicts, or is closed. Use this command when the
+  file has history:
 
-  Update `CHANGELOG.md` only when there are user-visible, developer-facing,
-  operational, or documentation changes worth recording. Use factual entries;
-  do not invent capabilities or add marketing copy. Skip purely mechanical
-  churn unless it affects users, operators, contributors, or release notes.
+      git log --no-merges --reverse --format="%H %ad %s" --date=iso "${changelog_touch}..HEAD"
+
+  If `changelog_touch` is empty because the file has never existed, review all
+  reachable non-merge commits instead:
+
+      git log --no-merges --reverse --format="%H %ad %s" --date=iso HEAD
+
+  Read the existing `CHANGELOG.md` in full and use it as a deduplication check.
+  For every candidate commit, inspect the actual changes, not only the subject;
+  use `git show --stat`, `git show --name-only`, and targeted diffs as needed.
+  Record all user-visible, developer-facing, operational, or documentation
+  changes worth recording from the whole range, including changes older than
+  24 hours. Skip purely mechanical churn unless it affects users, operators,
+  contributors, or release notes. If the range is empty, report that no update
+  was needed.
 
    If `CHANGELOG.md` is created or modified, create a branch named
    `docs/update-changelog-YYYY-MM-DD-HHMM` using UTC time, commit with message
