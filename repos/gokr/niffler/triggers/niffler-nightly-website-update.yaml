@@ -27,36 +27,42 @@ prompt: |-
 
   GITHUB_REPO=gokr/niffler
 
-  ## Step 1: Understand what changed
-  Run:
-  ```bash
-  git log --since="24 hours ago" --pretty=format:"%h %s" --all
-  ```
+  ## Bounded procedure
 
-  ## Step 2: Read current materials
-  Read these files to understand the current messaging:
-  - `website/index.html` — the public website
-  - `website/components.html` — the components status page
-  - `website/styles.css`, `website/app.js` — styles and behavior
-  - `website/i18n.js` — locale strings (keep all locales in sync)
+  1. Run:
+     ```bash
+     git log --since="24 hours ago" --pretty=format:"%h %s" --all
+     ```
+     If there are no commits in the window, exit immediately with a one-line
+     report. Do not read any repository files in that case.
+  2. Check whether an open PR from a previous nightly website run already
+     covers this window (branches named `docs/nightly-website-update-*`).
+     If one exists, do not duplicate its work: exit with a short note,
+     unless its copy is now inaccurate against the source of truth.
+  3. Read only what this window's changes touch. From the commit subjects,
+     pick the few files that document the changed product surface (usually
+     a subset of `README.md`, `CHANGELOG.md`, `docs/MANUAL.md`,
+     `manifest.yaml`) and read only the relevant sections around those
+     changes. Never read `AGENTS.md` end to end. For `website/index.html`,
+     `website/components.html`, and `website/i18n.js`, open only the
+     sections holding copy you will actually change; read `styles.css` or
+     `app.js` only when behavior changed. Do not read files purely to
+     "understand the repo".
+  4. Update only the copy affected by this window's changes. Keep the same
+     visual design language and existing branding. Keep all locales in
+     `i18n.js` in sync for the keys you change.
+  5. If material corrections are needed, commit them to a unique branch
+     named `docs/nightly-website-update-{YYYY-MM-DD-HHMM}` using UTC time,
+     push, and create a GitHub PR against `main` with a summary of what was
+     updated and why using the `chetter_create_pr` MCP tool.
 
-  Also read source-of-truth docs: `README.md`, `AGENTS.md`, `CHANGELOG.md`,
-  `docs/MANUAL.md`, and `manifest.yaml`.
+     Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
-  ## Step 3: Update the website
-  Update the website pages to accurately describe current product
-  capabilities, tech stack, architecture, and any new features. Keep the
-  same visual design language and existing branding. Update `i18n.js` for
-  all locales when user-facing copy changes.
+  ## Stopping rules
 
-   ## Step 4: Commit and create PR
-   If material corrections are needed, commit them to a unique branch named
-   `docs/nightly-website-update-{YYYY-MM-DD-HHMM}` using UTC time, push, and
-   create a GitHub PR against `main` with a summary of what was updated and
-   why using the `chetter_create_pr` MCP tool.
-
-    Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
-
-  Do NOT push directly to main. Keep changes focused on website accuracy
-  only. If no material correction is needed, leave files unchanged and exit
-  without a PR.
+  - Do not push directly to main. Keep changes focused on website accuracy
+    only. If no material correction is needed, leave files unchanged and
+    exit without a PR.
+  - Once the PR is created (or no update is needed), stop: no
+    re-verification passes, no re-reading files already reviewed, no
+    further polling.
