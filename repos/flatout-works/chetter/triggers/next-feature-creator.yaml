@@ -46,5 +46,11 @@ prompt: |-
   ### Guardrails
   - Do NOT grep/scrape the codebase for TODOs/FIXMEs — trust issues, CHANGELOG, docs, and commit history as the signal.
   - If all good candidates are already open issues, exit cleanly without creating a duplicate.
-  - Before creating the issue, verify the candidate is not ALREADY implemented: grep `docs/`, `CHANGELOG.md`, and the last 30 days of commit subjects for the candidate's feature name and close synonyms. If any source indicates the capability is already shipped (not merely planned), discard the candidate and evaluate the next one. Filing an issue for completed work wastes a review cycle.
+  - Before creating the issue, verify the candidate is not ALREADY implemented using ONLY: `docs/`, `CHANGELOG.md`, open issues, and the last 30 days of commit subjects (`git log --oneline`). Do NOT grep or read source code (packages, `internal/`, `core/`, `src/`, or any `.go`/`.ts`/`.nim` files) to verify implementation status, and do not open source files to justify the choice. If any allowed source indicates the capability is already shipped (not merely planned), discard the candidate and evaluate the next one.
   - Stop analysis after step 2 and make a decision. Do not iterate.
+
+  ## Stopping rules
+  The task has exactly two terminal states: one issue created, or no suitable candidate (exit cleanly). When you reach either:
+  1. Print the outcome (issue URL or exit reason) as your last message.
+  2. Stop immediately. No re-verification of shipped/similar candidates, no further issue polling, no follow-up scans.
+  3. Call `chetter_create_issue` at most once. A returned issue URL is proof the issue exists.
