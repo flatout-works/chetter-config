@@ -31,8 +31,8 @@ agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-implementer
 # No provider_id/model_id pin: use the model catalog default for the opencode
-# harness. The previous hf:zai-org/GLM-5.2 pin is only wired for the pi
-# harness and caused repeated "stuck harness: no progress" task failures.
+# harness. The previous hf:zai-org/GLM-5.2 pin is no longer served by Synthetic
+# and caused repeated "stuck harness: no progress" task failures.
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 14400

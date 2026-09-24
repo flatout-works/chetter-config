@@ -1,18 +1,18 @@
 # yaml-language-server: $schema=../chetter/schemas/model-catalog.schema.json
 version: 1
 default_provider: synthetic
-default_model: hf:zai-org/GLM-5.3-Flash
+default_model: syn:large:text
 
 defaults:
   opencode:
     provider: synthetic
-    model: hf:zai-org/GLM-5.3-Flash
+    model: syn:large:text
   pi:
     provider: deepseek
     model: deepseek-v4-flash
   claude-code:
     provider: synthetic
-    model: hf:zai-org/GLM-5.3-Flash
+    model: syn:large:text
   codewhale:
     provider: deepseek
     model: deepseek-v4-flash
@@ -26,10 +26,14 @@ providers:
     kind: openai_compatible
     base_url: https://api.synthetic.new/openai/v1
     api_key_env: SYNTHETIC_API_KEY
-    # All Synthetic Always-On models (included in every subscription):
+    # Stable Synthetic aliases: syn:large:text always resolves to whichever
+    # model Synthetic currently serves as its large text model, so this catalog
+    # entry does not need to change when model ids churn. The old
+    # hf:zai-org/GLM-5.2 pin is no longer served by Synthetic at all.
     # https://dev.synthetic.new/docs/api/models
     models:
-      - id: hf:zai-org/GLM-5.2
+      - id: syn:large:text
+        name: Synthetic (current large text model)
       - id: hf:zai-org/GLM-5.3-Flash
       - id: hf:zai-org/GLM-4.7-Flash
       - id: hf:Qwen/Qwen3.6-27B

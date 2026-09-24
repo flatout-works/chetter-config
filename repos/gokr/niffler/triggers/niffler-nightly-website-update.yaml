@@ -14,7 +14,7 @@ agent_image: ghcr.io/flatout-works/chetter-agent:nim
 harness: claude-code
 agent: docs-maintainer
 provider_id: synthetic
-model_id: hf:zai-org/GLM-5.3-Flash
+model_id: syn:large:text
 timeout_sec: 7200
 # Resumable (gVisor): a stuck or failed attempt keeps its container, so the
 # session can be resumed with the workspace intact within ttl_hours.

@@ -13,7 +13,7 @@ agent_image: ghcr.io/flatout-works/chetter-agent:nim
 harness: claude-code
 agent: pr-reviewer
 provider_id: synthetic
-model_id: hf:zai-org/GLM-5.3-Flash
+model_id: syn:large:text
 timeout_sec: 3600
 # Bounded review procedure: full-file reads of every changed file and
 # unconditional full-suite verification caused broad exploration and high
