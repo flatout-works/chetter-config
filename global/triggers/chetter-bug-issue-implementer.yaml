@@ -15,7 +15,7 @@ agent_image: ghcr.io/flatout-works/chetter-agent:golang
 harness: opencode
 agent: issue-implementer
 provider_id: synthetic
-model_id: hf:zai-org/GLM-5.2
+model_id: syn:large:text
 git_url: https://github.com/flatout-works/chetter
 git_ref: main
 timeout_sec: 7200
