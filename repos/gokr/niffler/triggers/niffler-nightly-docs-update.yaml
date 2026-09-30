@@ -25,25 +25,45 @@ prompt: |-
 
   GITHUB_REPO=gokr/niffler
 
-  Start by inspecting recent history:
+  ## Bounded procedure
 
-      git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
+  1. Establish the review window and inspect it once:
 
-  Read the project overview and documentation sources in this repository:
-  `README.md`, `AGENTS.md`, `CHANGELOG.md`, `docs/` (especially
-  `docs/MANUAL.md`, `docs/WIRE.md`, `docs/ARCHITECTURE.md`), and the
-  `manifest.yaml` component list.
+         git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
 
-  Update docs that are outdated, incomplete, or inaccurate. Keep the existing
-  structure, tone, and formatting. Make the smallest accurate changes. Do not
-  describe planned work as shipped behavior.
+     If that window is empty, widen at most once (to 7 days) and say so. Do
+     not sweep the whole repository or every doc.
 
-   If documentation changes are made, create a branch named
-   `docs/nightly-update-YYYY-MM-DD-HHMM` using UTC time, commit with message
-   `docs: update documentation from recent changes`, push, and open a pull
-   request against `main` using the `chetter_create_pr` MCP tool.
+  2. Read `README.md` and the files named in `AGENTS.md`, then open
+     `docs/MANUAL.md`, `docs/WIRE.md`, `docs/ARCHITECTURE.md`, `CHANGELOG.md`,
+     and `manifest.yaml` only where a changed commit plausibly affects them.
+     Reading a doc is not itself a finding.
 
-    Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+  3. Verify each candidate drift against the code with a targeted read
+     (`git show`, a named file region). Do not launch repo-wide audit
+     sub-agents, do not read files end to end for context, and do not chase
+     unrelated stale claims you happen to notice. Document at most three
+     fixes; prefer the highest-impact drift.
 
-  If no documentation changes are needed, report that and exit without a PR.
-  Do not push directly to `main`.
+  4. If the review window contains no code changes, or no verified drift is
+     found, report "no documentation changes needed" and stop. Do not widen
+     the search or audit the docs at large to justify a PR.
+
+  5. If documentation changes are made, keep the existing structure, tone,
+     and formatting, make the smallest accurate changes, and do not describe
+     planned work as shipped. Create a branch named
+     `docs/nightly-update-YYYY-MM-DD-HHMM` using UTC time, commit with message
+     `docs: update documentation from recent changes`, push, and open one pull
+     request against `main` using the `chetter_create_pr` MCP tool.
+
+     Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+
+  ## Stopping rules
+
+  - This task has exactly one terminal state: one PR created, or a report that
+    no documentation changes are needed.
+  - When you reach it, stop immediately: no re-verification, no polling, and
+    no further tool calls. Do not wait on or resume background sub-agents.
+  - If a continuation prompt arrives after the terminal state, reply with the
+    one-line final status and stop.
+  - Do not push directly to `main`.
