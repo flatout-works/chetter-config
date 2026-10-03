@@ -55,8 +55,8 @@ Team-scoped triggers (`groups/<team>/triggers/*.yaml`) are materialized with the
 ## Agent dev container images
 
 The `global/images/` directory holds Dockerfiles for stack-specific agent runtime images.
-Each one inherits from `ghcr.io/flatout-works/chetter-agent-base:main` which provides
-the shared harness CLIs (opencode, claude-code, codewhale, pi) and common tooling.
+Each variant inherits from `ghcr.io/flatout-works/chetter-agent-base:main`, which provides
+all harnesses (opencode, claude-code, codewhale, pi, codex, niffler) and common tooling.
 
 Teammates pick an image via the `agent_image` field when submitting a task or in
 a trigger definition. To add a new variant, create a new directory with a `Dockerfile`
@@ -72,8 +72,40 @@ the language/toolchain packages you need.
 | `node` | Node 22, pnpm, TypeScript, ts-node, eslint, prettier |
 | `rust` | rustup, cargo, clippy, rustfmt, cargo-audit, build-essential, libssl |
 | `nim` | Nim 2.2.8, Nimble, Testament, Go 1.26.4, GCC/G++, Clang/libclang, GTK4, SQLite, libsodium, LZ4, MariaDB client headers, OpenSSL |
-| `minimal` | Base harnesses only — no language toolchain |
+| `minimal` | All harnesses and their runtime/self-extension toolchains; no additional stack-specific tooling |
 | `java-spring` | JDK 21, Maven, Gradle, Liquibase, PostgreSQL client |
+
+### Niffler tasks
+
+Select `harness: niffler` with any agent image. The shared base includes the
+complete pinned Niffler distribution and `/usr/local/bin/niffler-serve-proxy`,
+alongside the other harnesses; no dedicated variant is required. Chetter uses
+this revision's native `cli run` driver for turns, MCP bootstrap, cancellation
+and canonical export, and deduplicates its authoritative usage by turn ID.
+Rebuild the base and downstream variants before selecting Niffler in a deployed fleet.
+
+The base Dockerfile in the Chetter repository pins Niffler to commit
+`3f7684bd0dab0b29f59318ad7fe281ea51578bd9`. `/opt/niffler/REVISION` records
+that pin. The read-only `/opt/niffler` template includes prebuilt core,
+session runner, components, NATS server, bootstrap manifest, SDKs, sources,
+skills and documentation. It is assembled from `git archive` plus freshly
+built `var/bin`, never from a developer's working directory: no `.env`,
+store database, runtime bus address, or plugin state is included. The serve
+proxy must create a writable per-task `.niffler` runtime root and symlink
+immutable assets/binaries from the template. The image ships Nim packages at
+`/opt/niffler/nimble-pkgs2`; runtime setup must link `$HOME/.nimble/pkgs2`
+there so the pinned `config.nims` can resolve packages even when Chetter
+sets `HOME=/workspace`. Never boot a shared store directly under `/opt/niffler`.
+Keep component
+binaries off `PATH` (their names include `git`, `grep` and `bash`).
+
+The catalog default is `deepseek/deepseek-v4-flash`, using `DEEPSEEK_API_KEY`
+from the runner environment. No API key is required to build or smoke-test
+the image. Update the Dockerfile's `NIF_REV` and this README together when
+changing the pin; a build fails if the fetched commit does not match it.
+
+The base supplies Nim 2.2.12 and Go for Niffler's self-extension tools. Stack
+variants may select their own development toolchain versions.
 
 ### CI
 

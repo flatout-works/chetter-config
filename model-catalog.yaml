@@ -16,6 +16,9 @@ defaults:
   codewhale:
     provider: deepseek
     model: deepseek-v4-flash
+  niffler:
+    provider: deepseek
+    model: deepseek-v4-flash
   codex:
     provider: deepseek
     model: deepseek-v4-flash
