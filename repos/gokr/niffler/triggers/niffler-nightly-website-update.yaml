@@ -31,14 +31,16 @@ prompt: |-
 
   1. Run:
      ```bash
-     git log --since="24 hours ago" --pretty=format:"%h %s" --all
+     git log main --since="24 hours ago" --no-merges --pretty=format:"%h %s"
      ```
      If there are no commits in the window, exit immediately with a one-line
      report. Do not read any repository files in that case.
   2. Check whether an open PR from a previous nightly website run already
      covers this window (branches named `docs/nightly-website-update-*`).
-     If one exists, do not duplicate its work: exit with a short note,
-     unless its copy is now inaccurate against the source of truth.
+     Only skip when the PR covers all website-relevant changes in this
+     window and remains accurate against `main`. A branch-name match alone
+     is not enough; if newer changes are uncovered, make only the missing
+     corrections rather than repeating the existing PR.
   3. Read only what this window's changes touch. From the commit subjects,
      pick the few files that document the changed product surface (usually
      a subset of `README.md`, `CHANGELOG.md`, `docs/MANUAL.md`,
