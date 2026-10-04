@@ -117,6 +117,21 @@ every push to `main` that changes `global/images/**`. Each build also gets a
 Use these agent images for tasks. Do not use `chetter-runner`, which is the
 tight fleet daemon image and does not contain task harnesses.
 
+## Documentation self-merge
+
+`chetter-nightly-docs-update` authorizes the docs-maintainer to merge only the
+prose-only PR it creates in that activation, using the audited runner-bridge
+`chetter_merge_pr {repo, pr_number, merge_method}`. No new MCP tool is needed:
+Chetter injects the task/execution/claim and checks GitHub App authorization.
+This is a prompt-scoped policy, not a general server-side docs permission gate.
+The GitHub App must have merge permissions and branch protection still applies.
+
+The agent reviews the complete diff, local checks, CI/review state and head/base
+before merging. It never bypasses protections, merges other authors' PRs, or
+changes code/config/workflows/security policy under this authorization. Pending
+or failed checks, conflicts or a refused merge leave the PR open for a human.
+Other docs/changelog/website triggers remain PR-only unless explicitly enabled.
+
 ## Instance prerequisites
 
 - Create the `Chetter Core` team before syncing because the PR review trigger is team-scoped under `groups/Chetter Core/`.

@@ -1,17 +1,4 @@
 # yaml-language-server: $schema=../../../chetter/schemas/trigger.schema.json
-# Trigger: nightly documentation update from recent git changes
-#
-# Customize before enabling:
-#   git_url      - your repository URL
-#   git_ref      - branch to work from (usually main)
-#   agent_image  - runner image (get from your Chetter admin or build your own)
-#   agent        - optional: custom docs agent if you have one
-#   timeout_sec  - adjust based on repo size and number of docs
-#   prompt       - adapt the doc paths and conventions to your project
-#
-# To create: chetter_create_trigger with these fields.
-# To change later: chetter_update_trigger with changed fields.
-
 name: chetter-nightly-docs-update
 enabled: true
 cron_expr: "30 4 * * *"
@@ -23,34 +10,41 @@ agent: docs-maintainer
 provider_id: synthetic
 model_id: syn:large:text
 timeout_sec: 7200
-# Resumable (gVisor): a stuck or failed attempt keeps its container, so the
-# session can be resumed with the workspace intact within ttl_hours.
 session_mode: resumable
 ttl_hours: 24
 prompt: |-
-  Review recent repository changes and update documentation so it matches the
-  implementation.
+  Review recent changes in flatout-works/chetter and make the smallest factual
+  documentation corrections. GITHUB_REPO=flatout-works/chetter
 
-  GITHUB_REPO=flatout-works/chetter
-
-  Start by inspecting recent history:
-
+  Inspect non-merge history from the last 24 hours on the checked-out main:
       git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
+  No commits means report no changes and stop. Only document shipped behavior.
+  Check previous nightly docs PR titles/file lists once to avoid duplicating
+  an existing correction; do not conduct an issue/PR audit or merge old PRs.
 
-  Read the project overview and documentation sources that exist in this
-  repository, such as `README.md`, `docs/`, `AGENTS.md`, `CONTRIBUTING.md`, or
-  equivalent files.
+  Complete the review within 15 minutes. Read affected source/doc regions and
+  one targeted search across README.md/docs for stale claims. Do not read the
+  entire documentation tree. Edit at most four prose documentation files.
+  Eligible paths: README*.md, CHANGELOG.md, docs/**/*.md. Do not change code,
+  schemas, config, workflows, AGENTS.md, scripts, lockfiles or binary assets.
 
-  Update docs that are outdated, incomplete, or inaccurate. Keep the existing
-  structure, tone, and formatting. Make the smallest accurate changes. Do not
-  describe planned work as shipped behavior.
+  If corrections are needed, create docs/nightly-update-YYYY-MM-DD-HHMM (UTC),
+  run git diff --check and the repository-required checks relevant to docs,
+  commit, push, and create one PR against main using chetter_create_pr with
+  task_id=$CHETTER_TASK_ID, repo=$GITHUB_REPO, head=<branch>, base="main".
+  Do not use gh pr create, manually add the footer, or push directly to main.
 
-   If documentation changes are made, create a branch named
-   `docs/nightly-update-YYYY-MM-DD-HHMM` using UTC time, commit with message
-   `docs: update documentation from recent changes`, push, and open a pull
-   request against `main` using the `chetter_create_pr` MCP tool.
+  You are explicitly authorized to self-merge ONLY this activation's own
+  verified docs-only PR. Follow docs-maintainer's self-merge safety checklist:
+  inspect the complete PR diff/file list, verify head/base, local checks and
+  current CI/review/mergeability. Do not bypass any GitHub protection. Wait
+  at most 60 seconds for checks; pending/failed/unknown checks, change requests,
+  conflicts or unexpected changes mean leave it open with a clear reason.
+  If safe, call runner-bridge chetter_merge_pr with repo=$GITHUB_REPO,
+  pr_number=<your created PR number>, merge_method="MERGE" (no task_id arg).
+  If refused, leave it open; do not fall back to gh merge or direct pushes.
 
-    Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
-
-  If no documentation changes are needed, report that and exit without a PR.
-  Do not push directly to `main`.
+  Create at most one PR and attempt merge at most once. No changes, PR merged,
+  or PR left open with a reason are terminal: print the summary/URL and stop.
+  No repeated scans or post-settlement verification. If a continuation arrives
+  afterward, reply with a one-line final status and stop.
