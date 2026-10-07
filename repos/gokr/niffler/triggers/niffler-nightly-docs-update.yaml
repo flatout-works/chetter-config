@@ -25,25 +25,51 @@ prompt: |-
 
   GITHUB_REPO=gokr/niffler
 
-  Start by inspecting recent history:
+  ## Bounded procedure (one pass, then stop)
 
-      git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
+  1. Inspect the last 24 hours of non-merge commits:
 
-  Read the project overview and documentation sources in this repository:
-  `README.md`, `AGENTS.md`, `CHANGELOG.md`, `docs/` (especially
-  `docs/MANUAL.md`, `docs/WIRE.md`, `docs/ARCHITECTURE.md`), and the
-  `manifest.yaml` component list.
+       git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
 
-  Update docs that are outdated, incomplete, or inaccurate. Keep the existing
-  structure, tone, and formatting. Make the smallest accurate changes. Do not
-  describe planned work as shipped behavior.
+     If the window is empty, report "no changes" and stop. Do not widen the
+     window and do not hunt for older drift.
 
-   If documentation changes are made, create a branch named
-   `docs/nightly-update-YYYY-MM-DD-HHMM` using UTC time, commit with message
-   `docs: update documentation from recent changes`, push, and open a pull
-   request against `main` using the `chetter_create_pr` MCP tool.
+  2. Before reviewing anything, check for an existing open nightly docs PR:
 
-    Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+       gh pr list --repo gokr/niffler --state open \
+         --json number,headRefName,title \
+         --jq '.[] | select(.headRefName | startswith("docs/nightly-update-"))'
+
+     If one is open, report it and exit without re-analyzing the same gap.
+     Duplicate nightly PRs are not merged faster; they only add review load.
+
+  3. For commits in that window only, open a documentation file only when a
+     changed source file plausibly invalidated that exact section. Read the
+     affected regions, not whole files. Do not read README.md, AGENTS.md,
+     CHANGELOG.md or the full docs/ tree by default. Edit at most four
+     documentation files.
+
+  4. Verify every claim against the source file named by the commit. Keep the
+     existing structure, tone, and formatting. Make the smallest accurate
+     change. Do not describe planned work as shipped behavior. Do not touch
+     non-English mirrors unless the English section you change has one.
+
+  If documentation changes are made, create a branch named
+  `docs/nightly-update-YYYY-MM-DD-HHMM` using UTC time, commit with message
+  `docs: update documentation from recent changes`, push, and open a pull
+  request against `main` using the `chetter_create_pr` MCP tool.
+
+  Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
 
   If no documentation changes are needed, report that and exit without a PR.
-  Do not push directly to `main`.
+
+  ## Stopping rules
+
+  - One review pass: at most one branch, one commit, one PR.
+  - After the PR is opened or you report no changes, stop. No re-verification,
+    no re-reading, no polling, no second pass.
+  - Call `chetter_create_pr` at most once; a returned PR URL is proof the PR
+    exists.
+  - Do not push directly to `main`.
+  - If a continuation arrives after a terminal state, reply with the one-line
+    final status and stop.
