@@ -15,33 +15,53 @@ timeout_sec: 7200
 session_mode: resumable
 ttl_hours: 24
 prompt: |-
-  Review all changes made to the repository in the last 24 hours and update the website and technical architecture presentation so they accurately reflect the current state of the product.
+  Update the website and technical architecture pages to reflect changes merged in the last 24 hours. Work from a bounded diff, not a repository survey.
 
   GITHUB_REPO=flatout-works/chetter
 
-  ## Step 1: Understand what changed
-  Run:
+  ## Step 0: Reuse an existing nightly website PR
+
+  Run once:
   ```bash
-  git log --since="24 hours ago" --pretty=format:"%h %s" --all
+  gh pr list --state open --limit 30 --json number,headRefName,url \
+    --jq '.[] | select(.headRefName | startswith("docs/nightly-website-update-"))'
   ```
 
-  ## Step 2: Read current materials
-  Read these files to understand the current messaging:
-  - `website/index.html` — The public marketing website
-  - `website/marketing.css` — Website styles (shared by all pages)
-  - `website/technical.html` — Technical architecture sub-page (was previously the standalone presentation3 deck)
+  - No match: continue with a fresh branch in Step 4.
+  - One or more matches: reuse the newest branch (highest `YYYY-MM-DD-HHMM` timestamp). Fetch and check it out, then add only what is still missing. Never open a second nightly website PR; mention any older branches as stale in the final report.
 
-  Also read source-of-truth docs: `README.md`, `AGENTS.md`, `CHANGELOG.md`.
+  ## Step 1: Identify the change window
 
-  ## Step 3: Update the website
-  Update `website/index.html` to accurately describe current product capabilities, tech stack, architecture, and any new features. Keep the same visual design language and existing branding.
+  Run once:
+  ```bash
+  git log --since="24 hours ago" --no-merges --pretty=format:"%h %s" --all
+  ```
 
-  ## Step 4: Update the technical architecture sub-page
-  Update `website/technical.html` to accurately reflect the current system architecture and technologies in use. Keep the existing slide structure and visual style, and keep it consistent with the main website's design language.
+  If no product or behavior commit is in that window, do not invent work: go to Step 5 and exit without changes.
 
-   ## Step 5: Commit and create PR
-   If material corrections are needed, commit them to a unique branch named `docs/nightly-website-update-{YYYY-MM-DD-HHMM}` using UTC time, push, and create a GitHub PR against `main` with a summary of what was updated and why using the `chetter_create_pr` MCP tool.
+  ## Step 2: Read current materials (fixed list, no tree sweep)
 
-    Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+  Read only these files:
+  - `website/current/index.html` — deployed marketing page
+  - `website/old/technical.html` — technical architecture page
+  - `website/old/marketing.css` — shared styles, only if a style change is required
+  - `README.md`, `AGENTS.md`, `CHANGELOG.md` — source-of-truth claims
 
-  Do NOT push directly to main. Keep changes focused on documentation/marketing accuracy only. If no material correction is needed, leave files unchanged and exit without a PR.
+  If a path does not exist, locate the replacement with a single `find website -name '*.html'` and proceed. Do not explore other directories, read source files, or grep the codebase to justify copy.
+
+  ## Step 3: Update the pages
+
+  Make minimal factual corrections so the pages match shipped behavior. Keep existing structure, branding, and visual language. Do not restyle, rewrite for marketing, or describe planned work as shipped.
+
+  ## Step 4: Commit and open or update the PR
+
+  Commit only the website files you changed to `docs/nightly-website-update-{YYYY-MM-DD-HHMM}` (UTC). Push it. If no open nightly website PR was reused, call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not add a manual Chetter footer. Never push directly to main.
+
+  ## Step 5: Stopping rules
+
+  Terminal states — exactly one applies:
+  1. Existing nightly website PR updated (no new PR).
+  2. One new PR created.
+  3. No material correction needed; files unchanged, no PR.
+
+  At a terminal state, print the PR URL or the no-change reason as the final message and stop. Do not re-verify the PR, poll checks, re-read files, or investigate related source. Call `chetter_create_pr` at most once. A continuation prompt after a terminal state gets a one-line final status, not another investigation.

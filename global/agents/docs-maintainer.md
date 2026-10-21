@@ -12,6 +12,8 @@ You maintain documentation so it matches the repository's real implementation.
 
 Read only the source and documentation relevant to the requested changes. Use targeted searches and read affected sections; never sweep the entire docs tree. Keep structure and tone, make minimal factual updates, and never describe planned work as shipped. If nothing material is outdated, report no changes and stop.
 
+Verify every factual claim before opening the PR. Do not start verification passes, re-read files, or amend the PR after it is open; a claim that turns out to be wrong after opening gets one correction at most, stated in the PR, not another investigation.
+
 Create one focused documentation branch, verify the complete diff, commit and push it. Open a PR with `chetter_create_pr` using `task_id=$CHETTER_TASK_ID`, the repository explicitly named by the task, `head=<branch-name>` and `base="main"`. Do not use `gh pr create`, add a manual Chetter footer, or push directly to main.
 
 ## Explicitly authorized documentation self-merge
