@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=../../../../../chetter/schemas/trigger.schema.json
 # Trigger: Niffler nightly documentation update from recent git changes
 #
-# Reviews the last 24 hours of changes and keeps README.md, AGENTS.md and
-# docs/ in sync with the implementation.
+# Reviews every change since the last commit that touched the docs surface and
+# keeps README.md, AGENTS.md and docs/ in sync with the implementation.
 
 name: niffler-nightly-docs-update
 enabled: true
@@ -21,29 +21,71 @@ session_mode: resumable
 ttl_hours: 24
 prompt: |-
   Review recent repository changes and update documentation so it matches the
-  implementation.
+  implementation. Complete the whole review within 20 minutes.
 
   GITHUB_REPO=gokr/niffler
 
-  Start by inspecting recent history:
+  ## 1. Establish the watermark
 
-      git log --since="24 hours ago" --no-merges --pretty=format:"%h %ad %s" --date=iso
+  The watermark is the most recent commit on the checked-out branch that touched
+  the documentation surface:
 
-  Read the project overview and documentation sources in this repository:
-  `README.md`, `AGENTS.md`, `CHANGELOG.md`, `docs/` (especially
-  `docs/MANUAL.md`, `docs/WIRE.md`, `docs/ARCHITECTURE.md`), and the
-  `manifest.yaml` component list.
+      docs_touch=$(git log -1 --format=%H -- README.md AGENTS.md CHANGELOG.md docs manifest.yaml)
 
-  Update docs that are outdated, incomplete, or inaccurate. Keep the existing
-  structure, tone, and formatting. Make the smallest accurate changes. Do not
-  describe planned work as shipped behavior.
+  Review every non-merge commit after that watermark, oldest first. Do not use a
+  fixed 24-hour window and do not guess how far back to look:
 
-   If documentation changes are made, create a branch named
-   `docs/nightly-update-YYYY-MM-DD-HHMM` using UTC time, commit with message
-   `docs: update documentation from recent changes`, push, and open a pull
-   request against `main` using the `chetter_create_pr` MCP tool.
+      git log --no-merges --reverse --format="%h %ad %s" --date=iso "${docs_touch}..HEAD"
 
-    Call `chetter_create_pr` with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`, and `base="main"`. Do not use `gh pr create` and do not manually add the Chetter footer; the tool adds the canonical footer and records audit/artifact metadata.
+  If `docs_touch` is empty, use `git log -1 --format=%H` as the watermark. If the
+  range is empty, report that and exit without a PR. Do not re-review older,
+  already-documented changes.
 
-  If no documentation changes are needed, report that and exit without a PR.
+  ## 2. Scope the review
+
+  For each commit in the range, inspect its changed files with `git show --stat`
+  and targeted diffs. Read only the documentation sections that the changed
+  behavior touches. Never sweep the whole docs tree, and do not read `README.md`,
+  `AGENTS.md`, `CHANGELOG.md`, `docs/MANUAL.md`, `docs/WIRE.md`,
+  `docs/ARCHITECTURE.md`, and `manifest.yaml` end to end. Do not inspect other
+  open PRs or unmerged branches; the open docs PR below is the only one to use.
+
+  ## 3. Reuse the open docs PR before creating a new one
+
+  An earlier nightly run may still have its docs PR open. Continue on that
+  branch instead of opening a second PR:
+
+      gh pr list --state open --limit 30 --json number,headRefName,url,title \
+        --jq '.[] | select(.headRefName | startswith("docs/nightly-update-"))'
+
+  - No match: use a fresh branch `docs/nightly-update-YYYY-MM-DD-HHMM` (UTC).
+  - One match: fetch and check out that branch, rebase onto `origin/main` without
+    force, and add only what is still missing. A duplicate entry is a defect.
+  - Several matches: reuse the newest branch and mention the others as stale.
+
+  ## 4. Edit and verify
+
+  Make the smallest accurate changes and keep the existing structure, tone, and
+  formatting. Do not describe planned work as shipped behavior. Run
+  `git diff --check`. If the diff is empty, report no changes and exit without a
+  PR.
+
+  ## 5. Publish
+
+  Commit with `docs: update documentation from recent changes`, push the docs
+  branch, and open the PR against `main` using the `chetter_create_pr` MCP tool
+  with `task_id=$CHETTER_TASK_ID`, `repo="$GITHUB_REPO"`, `head=<branch-name>`,
+  and `base="main"`. Do not use `gh pr create` and do not manually add the
+  Chetter footer; the tool adds the canonical footer and records audit/artifact
+  metadata. When reusing an open PR, push to its branch only: do not call
+  `chetter_create_pr` again, rename the branch, or open a second PR.
+
+  ## Stopping rules
+
+  A PR created or updated, an empty diff, or an empty commit range is terminal.
+  Print the PR URL or exit reason as your last message and stop immediately. Do
+  not re-verify completed work, re-run checks, widen the window, or start a new
+  investigation. If a continuation prompt arrives, reply with the one-line final
+  status and stop.
+
   Do not push directly to `main`.
