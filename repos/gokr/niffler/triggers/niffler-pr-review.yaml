@@ -30,15 +30,22 @@ prompt: |-
      regions around the change. Never read every changed file end to end.
   3. If the PR is documentation-only or a mechanical rename/move across many
      files, do not review files one by one: spot-check a few representative
-     files and verify with a build instead.
+     files and stop. Do not run a build or tests for docs-only changes.
   4. Verification: skip code checks entirely for docs-only changes. Otherwise
      run `make build` plus the narrowest relevant `make test-<component>`
      target for the touched components; run the full `make test` only when the
-     diff broadly touches the bus or SDK. Do not run `make check` — it does
-     not exist in this repository.
+     diff broadly touches the bus or SDK. If the build fails because the
+     Nimble/toolchain environment is not set up in the image, do not repair
+     it (no package installs, dependency surgery, or `~/.nimble` symlink
+     rewriting): note the environment failure and review from the diff. Do
+     not run `make check` — it does not exist in this repository.
   5. Post exactly one review with the `chetter_pr_review` MCP tool
      (task_id=$CHETTER_TASK_ID, repo=$GITHUB_REPO, pr_number=$PR_NUMBER).
      After it is posted, stop: no re-verification, no further polling.
+
+  This bounded procedure supersedes any generic review procedure appended to
+  the task. Prefer posting the review from the diff over repairing the
+  environment or running broad verification.
 
   Assess correctness, security, error handling, concurrency, bus-contract
   (JSON envelopes over NATS), and tests. For Nim changes also check the style
