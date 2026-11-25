@@ -30,7 +30,10 @@ prompt: |-
      regions around the change. Never read every changed file end to end.
   3. If the PR is documentation-only or a mechanical rename/move across many
      files, do not review files one by one: spot-check a few representative
-     files and verify with a build instead.
+     files and verify with a build instead. For a changelog-only PR, treat the
+     diff as authoritative: do not reconstruct tag ancestry, verify release
+     ranges, or re-check that commits are post-release, and do not loop on
+     confirming that entries look correct.
   4. Verification: skip code checks entirely for docs-only changes. Otherwise
      run `make build` plus the narrowest relevant `make test-<component>`
      target for the touched components; run the full `make test` only when the
@@ -39,6 +42,11 @@ prompt: |-
   5. Post exactly one review with the `chetter_pr_review` MCP tool
      (task_id=$CHETTER_TASK_ID, repo=$GITHUB_REPO, pr_number=$PR_NUMBER).
      After it is posted, stop: no re-verification, no further polling.
+  6. Stopping rule: once the diff and required checks are read, you have
+     enough to decide. Post the review instead of re-confirming a point you
+     already established. Never repeat a verification command or re-derive
+     ancestry that the diff already settles. An unfinished review posts
+     nothing and wastes the entire run.
 
   Assess correctness, security, error handling, concurrency, bus-contract
   (JSON envelopes over NATS), and tests. For Nim changes also check the style
